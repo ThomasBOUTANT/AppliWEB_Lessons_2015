@@ -1,0 +1,1849 @@
+<!DOCTYPE html>
+<html id="slides-page" class=" js no-mobile desktop no-ie ff ff48 cours-section csc4101-section seance2-section w-840 gt-240 gt-320 gt-480 gt-640 gt-768 gt-800 lt-1024 lt-1280 lt-1440 lt-1680 lt-1920 portrait no-landscape gradient rgba opacity textshadow multiplebgs boxshadow borderimage borderradius no-cssreflections csstransforms csstransitions no-touch no-retina fontface domloaded" lang="fr"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<title>Serveur Web, middleware côté serveur, MVC et Framework Symfony</title>
+<meta name="author" content="(Télécom SudParis)">
+<meta name="description" content="Télécom SudParis">
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="[CSC4101%20Web]%20Slides%20TP2_fichiers/reveal.css">
+
+<link rel="stylesheet" href="[CSC4101%20Web]%20Slides%20TP2_fichiers/simple.css" id="theme">
+
+<link rel="stylesheet" href="[CSC4101%20Web]%20Slides%20TP2_fichiers/presentation.css">
+
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = '../reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+<meta name="copyright" content="Le Web, le protole et le serveur HTTP -- Créateur Dominique Bouillet, mis à jour Chantal Taconet, Olivier Berger  -- 2016"><script src="[CSC4101%20Web]%20Slides%20TP2_fichiers/zoom.js" type="text/javascript"></script><script src="[CSC4101%20Web]%20Slides%20TP2_fichiers/notes.js" type="text/javascript"></script>
+</head>
+<body style="transition: -moz-transform 0.8s ease 0s;">
+<div data-background-transition="fade" data-transition-speed="fast" role="application" class="reveal fade">
+<div style="width: 960px; height: 700px; left: 50%; top: 50%; bottom: auto; right: auto; transform: translate(-50%, -50%) scale(0.875);" class="slides">
+<section aria-hidden="true" style="display: none;" class="past" data-background-image="./media/title-slide-background.png" id="sec-title-slide" data-background="./media/title-slide-background.png" hidden=""><h1 class="title"></h1><h1></h1><h2>&nbsp;</h2><h2>Serveur Web,<br>middleware, MVC<br> et framework Symfony</h2><h3>CSC4101 - séance 2</h3><h3></h3><h3 class="author">Télécom SudParis</h3><h3 class="date">19/09/2016</h3>
+</section>
+<section aria-hidden="true" style="display: none;" class="past" id="table-of-contents" hidden="">
+<div id="table-of-contents">
+<h2>Table des matières</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#/slide-orgheadline3">Préface</a></li>
+<li><a href="#/slide-orgheadline15">Architecture</a></li>
+<li><a href="#/slide-orgheadline27">Fonctionnement des serveurs Web</a></li>
+<li><a href="#/slide-orgheadline34">Le programme en lui-même</a></li>
+<li><a href="#/slide-orgheadline42">Sessions applicatives</a></li>
+<li><a href="#/slide-orgheadline45">Développer des applis Web</a></li>
+<li><a href="#/slide-orgheadline54">Patron MVC</a></li>
+<li><a href="#/slide-orgheadline59"><i>Framework</i> Symfony</a></li>
+<li><a href="#/slide-orgheadline70">Technologie PHP</a></li>
+<li><a href="#/slide-orgheadline72">Postface</a></li>
+</ul>
+</div>
+</div>
+</section>
+
+
+
+
+
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" style="top: 254.5px; display: none;" id="slide-orgheadline3" data-background="#dbdbed" class="center has-light-background">
+<h2 id="orgheadline3">Préface</h2>
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline1">
+<h3 id="orgheadline1">Rappel séance précédente</h3>
+<ul>
+<li>HTTP (1.1)</li>
+<li>Utiliser HTTP pour faire communiquer client et serveur Web</li>
+<li>Outils (inspecteur réseau navigateur, <code>curl</code>)</li>
+
+</ul>
+
+<aside class="notes">
+<p>
+Les concepts sur HTTP, le client-serveur ont été vus dans la séance précédente
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline2">
+<h3 id="orgheadline2">Objectifs de cette séance</h3>
+<ul>
+<li>Comprendre l'architecture de composants logiciels utilisés pour
+faire fonctionner des applications sur un serveur Web</li>
+<li><b>Comment s'y prendre pour développer</b></li>
+<li>Prise en main de l'environnement Symfony</li>
+<li>Programmer une application en PHP dans Symfony</li>
+
+</ul>
+
+<aside class="notes">
+<p>
+On met particulièrement en évidence le fait qu'on se préoccupe du
+développement d'applications, et qu'on prend directement le parti de
+sauter dans le grand bain avec un <i>framework</i>, sans passer par toutes
+les étapes des CGIs, du PHP traditionnel, …
+</p>
+
+</aside>
+
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" style="top: 221px; display: none;" id="slide-orgheadline15" data-background="#dbdbed" class="center has-light-background">
+<h2 id="orgheadline15">Architecture</h2>
+<p>
+Principes de conception des applications
+</p>
+
+<aside class="notes">
+<p>
+On va présenter les grandes architectures dans un ordre chronologique d'apparition des technologies :
+</p>
+<ol>
+<li>pages statiques</li>
+<li>applications BD + Web</li>
+<li>multi-couches</li>
+
+</ol>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="1" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="past" style="display: none;" id="slide-orgheadline7" hidden="">
+<h3 id="orgheadline7">Serveur de pages Web statiques</h3>
+<p>
+Historiquement, les premiers serveurs Web se contentent de fournir des
+pages Web <b>statiques</b> chargées depuis des fichiers (documents HTML).
+</p>
+
+
+<div class="figure">
+<p><img src="[CSC4101%20Web]%20Slides%20TP2_fichiers/serveur-pages-statiques.png" alt="serveur-pages-statiques.png" title="&quot;Serveur de pages statiques&quot;">
+</p>
+</div>
+
+</section>
+<section aria-hidden="true" style="display: none;" class="" id="slide-orgheadline6">
+<h4 id="orgheadline6">Caractéristiques d'un serveur de pages statiques</h4>
+<div class="outline-text-4" id="text-orgheadline6">
+</div><ul class="org-ul"><li><a id="orgheadline4"></a><span class="underline">Avantages</span><br><ul>
+<li>Efficace (tient la charge)</li>
+
+</ul></li>
+<li><a id="orgheadline5"></a><span class="underline">Inconvénients</span><br><ul>
+<li>Ne permet pas facilement des pages qui se mettent à jour dynamiquement, en fonction des visites</li>
+<li>Encore moins des <i>applications</i> interactives</li>
+<li>Problème de cohérence des URLs (renommages, liens cassés, etc.)</li>
+
+</ul>
+
+<aside class="notes">
+<p>
+Le problème de cohérence des URLs vient du fait qu'un renommage du nom
+d'une page, ou son déplacement dans l'arborescence du système de
+fichiers sur le serveur, nécessitera de re-modifier le contenu de tous
+les fichiers des pages qui pointent vers celle-ci : l'arborescence
+logique des pages via les liens hypertextes est fortement liée à
+l'arborescence physique. Des solutions de configuration ou de
+compilateur de sites permettent de contourner ce problème, mais c'est peu confortable.
+</p>
+
+</aside></li></ul>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="1" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="past" style="display: none;" id="slide-orgheadline12" hidden="">
+<h3 id="orgheadline12">Applications BD + Web</h3>
+<p>
+Les serveurs servent à faire tourner des applications
+produisant des pages Web <b>dynamiques</b>, à partir de données issues de
+bases de données.
+</p>
+
+
+<div class="figure">
+<p><img src="[CSC4101%20Web]%20Slides%20TP2_fichiers/serveur-BD-Web.png" alt="serveur-BD-Web.png" title="&quot;Serveur pour applications BD + Web&quot;">
+</p>
+</div>
+
+<aside class="notes">
+<p>
+BD : Bases de Données. Typiquement via l'interrogation d'un SGBDR
+</p>
+
+<p>
+<i><b>Note</b> : on ne revient pas sur les technologies de bases de 
+données dans ce cours, que l'on considère comme acquises (programme 
+première année).</i>
+</p>
+
+<p>
+Les programmes qui produisent les pages peuvent aussi utiliser d'autres
+sources de données que les bases de données
+</p>
+
+</aside>
+
+</section>
+<section aria-hidden="true" style="display: none;" class="" id="slide-orgheadline11">
+<h4 id="orgheadline11">Caractéristiques d'un serveur pour applications BD + Web</h4>
+<p>
+Age d'or du Web : des <b>applications</b> sont possibles : des programmes
+génèrent des pages Web en fonction des requêtes du client
+</p>
+
+<ul class="org-ul"><li><a id="orgheadline8"></a><span class="underline">Avantages</span><br><ul>
+<li>Base de données gère l'intégrité des données (transactions, accès
+multiples, intégrité référentielle, …)</li>
+<li>Tient la charge : dupliquer l'exécution des scripts</li>
+<li>Large gamme de choix du langage de programmation</li>
+
+</ul></li>
+
+<li><a id="orgheadline10"></a><span class="underline">Inconvénients</span><br><ul>
+<li>Invocation des scripts par le serveur</li>
+
+<li>Difficulté à programmer (+/-)</li>
+
+</ul>
+
+<aside class="notes">
+<p>
+On ne raffine pas trop le modèle de couches avec l'adapteur de données
+qui est parfois introduit, pour ne pas trop complexifier
+</p>
+
+<p>
+On mentionne des <i>scripts</i>, car les langages de scripts (PHP, Perl,
+Python, etc.) furent très populaire dans l'essor de cette technologie
+de pages Web dynamiques. Des programmes dans un langage compilé sont
+aussi possibles (Java par ex.) sans que cela change le modèle.
+</p>
+
+<p>
+Différentes techniques d'invocation des programmes par les serveurs Webs (qui étaient initialement dédiés aux pages statiques)
+ont vu le jour. Un soucis général est les performances pour des consultations simultanées, sachant que
+tout n'est pas complètement dynamique dans une page Web, mais que si
+tout est regénéré à chaque consultation, le serveur peut vite
+s'écrouler. L'efficacité du mécanisme de déclencement de l'exécution du bon
+programme, et de récupération du contenu des pages généré est critique. Afin
+d'optimiser les performances, différentes générations de technologies ont émergé, qu'on verra <a href="#/slide-orgheadline9">plus loin</a>.
+</p>
+
+</aside></li></ul>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="1" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="past" style="display: none;" id="slide-orgheadline14" hidden="">
+<h3 id="orgheadline14">Architecture multi-couches</h3>
+<p>
+On distingue les différents composants mis en œuvre dans une application,
+en différentes couches indépendantes.
+</p>
+
+
+<div class="figure">
+<p><img src="[CSC4101%20Web]%20Slides%20TP2_fichiers/multi-couches.png" alt="multi-couches.png" title="&quot;Architecture multi-couches&quot;">
+</p>
+</div>
+
+<aside class="notes">
+<p>
+Chaque couche s'appuie sur la couche de droite, les flèches illustrant
+le flux de données
+</p>
+
+<p>
+On décrit cette architecture en parlant aussi d'architecture <i>multi-tier</i> ou <i>n-tier</i>.
+</p>
+
+</aside>
+
+</section>
+<section aria-hidden="true" style="display: none;" class="" id="slide-orgheadline13">
+<h4 id="orgheadline13">Caractéristiques</h4>
+<ul>
+<li><b>Découpage en couches</b></li>
+
+<li>Mieux décomposer l'architecture de l'application côté serveur pour
+mieux maîtriser le développement</li>
+
+<li>Découpler par exemple :
+
+<ul>
+<li>la <b>logique métier</b> (pas nécessairement Web)</li>
+
+<li>la <b>présentation</b> (sous forme de pages Web)</li>
+
+</ul></li>
+
+<li>Modèle qui peut être raffiné en ajoutant d'autres couches</li>
+
+</ul>
+
+<aside class="notes">
+<p>
+Cette approche d'architecture multi-couche n'est pas réservé aux 
+applications Web, mais s'applique à d'autres types d'applications.
+</p>
+
+<p>
+L'important est la modularisation, le découplage, qui facilite la maintenance, notamment l'évolutivité.
+</p>
+
+<p>
+Un autre avantage consiste aussi à permettre de mieux gérer
+certains problèmes de performances, en scindant les composants d'une
+couche sur plusieurs exécutions en parallèle, ce qui multiplie les 
+capacités de traitement (pourvu que la cohérence n'en souffre pas, ce 
+qui n'est pas toujours possible).
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" style="top: 209px; display: none;" id="slide-orgheadline27" data-background="#dbdbed" class="center has-light-background">
+<h2 id="orgheadline27">Fonctionnement des serveurs Web</h2>
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="2" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="past" style="display: none;" id="slide-orgheadline18" hidden="">
+<h3 id="orgheadline18">Serveur HTTP</h3>
+<ol>
+<li>Comprendre les requêtes HTTP des clients
+<ul>
+<li>URL</li>
+<li>Verbe/méthode/action</li>
+<li>En-têtes</li>
+<li>Données transmises</li>
+
+</ul></li>
+<li>Construire la réponse
+<ul>
+<li>Servir des documents</li>
+<li>Ou <b>exécuter des programmes</b></li>
+
+</ul></li>
+<li>Renvoyer une réponse au client (HTML, etc.)</li>
+
+</ol>
+
+<aside class="notes">
+<p>
+On ne détaillera pas ici la façon dont le serveur Web sert des données
+statiques depuis des documents, mais on se concentrera plutôt sur
+l'invocation des programmes, qui vont faire fonctionner les
+applications Web.
+</p>
+
+</aside>
+
+</section>
+<section aria-hidden="true" style="display: none;" class="past" id="slide-orgheadline16" hidden="">
+<h4 id="orgheadline16">Mais aussi</h4>
+<ul>
+<li>Vérifier la sécurité</li>
+<li>Gérer les performances</li>
+<li>…</li>
+
+</ul>
+</section>
+<section aria-hidden="true" style="display: none;" class="" id="slide-orgheadline17">
+<h4 id="orgheadline17">Exemples</h4>
+<ul>
+<li><a href="https://httpd.apache.org/">Apache</a></li>
+<li><a href="https://nginx.org/">Nginx</a></li>
+<li>PaaS (<i>Platform as a Service</i>) prêt à l'emploi sur un <i>Cloud</i></li>
+
+</ul>
+
+<aside class="notes">
+<p>
+
+</p>
+
+<dl>
+<dt><b>ENSEIGNANTSSEULEMENT</b></dt><dd>Détailler un peu plus en TP : montrer Apache
+qui tourne, les threads, la page server-status, …</dd>
+
+</dl>
+
+<p>
+Dans le cours, on s'appuiera globalement sur le serveur fourni par php
+avec <code>php -S</code> y compris quand utilisé via environnement de tests de Symfony.
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="1" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="past" style="display: none;" id="slide-orgheadline9" hidden="">
+<h3 id="orgheadline9">Programmes / Applications</h3>
+<ul>
+<li><p>
+Exécution :
+</p>
+<ul>
+<li><b>Directe</b> sur le système d'exploitation</li>
+
+</ul>
+<p>
+<i>ou</i>
+</p>
+<ul>
+<li>Dans le contexte d'un <b>serveur d'applications</b>
+<ul>
+<li>Un module du serveur Web</li>
+<li>Un serveur d'application dédié</li>
+
+</ul></li>
+
+</ul></li>
+
+</ul>
+
+</section>
+<section aria-hidden="true" style="display: none;" class="" id="slide-orgheadline19">
+<h4 id="orgheadline19">Invocation du programme</h4>
+<ul>
+<li>Le serveur Web invoque l'exécution d'un programme</li>
+<li>Le programme s'exécute sur une "plate-forme" : langage,
+bibliothèques, moteurs d'exécution, …</li>
+<li>Le programme fournit une sortie au format HTML (en général) : la
+page Web est transmise telle-quelle au client</li>
+
+</ul>
+
+
+<div class="figure">
+<p><img src="[CSC4101%20Web]%20Slides%20TP2_fichiers/invocation-programme.png" alt="invocation-programme.png" title="&quot;Invocation d'un programme&quot;">
+</p>
+</div>
+
+<aside class="notes">
+<p>
+Lien avec "<i>Platform as a Service</i>" (PaaS) : la plate-forme de
+développement et de déploiement est gérée de façon cohérente comme un
+tout intégré, disponible sur le Cloud.
+<a href="https://fr.wikipedia.org/wiki/Plate-forme_en_tant_que_service">https://fr.wikipedia.org/wiki/Plate-forme_en_tant_que_service</a>
+</p>
+
+<p>
+Les plate-formes Cloud liées au développement d'applications ne sont
+pas détaillées dans le cadre de ce cours.
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="3" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="past" style="display: none;" id="slide-orgheadline23" hidden="">
+<h3 id="orgheadline23">Technologies d'invocation d'un programme</h3>
+<ul>
+<li>Différentes façons d'appeler un programme</li>
+
+<li>Globalement la même architecture :
+
+<ol>
+<li>CGI (<i>Common Gateway Interface</i>)</li>
+<li>Exécution de programmes "au sein" du serveur HTTP</li>
+<li>Serveur d'applications séparé</li>
+
+</ol></li>
+
+</ul>
+
+
+</section>
+<section aria-hidden="true" style="display: none;" class="past" id="slide-orgheadline20" hidden="">
+<h4 id="orgheadline20">1. CGI (<i>Common Gateway Interface</i>)</h4>
+<ul>
+<li>Requête sur une URL invoque une exécution d'un <b>processus</b> sur l'OS :
+shell script, exécutable compilé, script (Perl, Python, …)</li>
+
+<li>Point d'entrée du programme unique : programmation impérative "classique"</li>
+
+<li>Problèmes :
+
+<ul>
+<li><b>lourdeur</b> de l'invocation d'un nouveau processus système à
+chaque requête</li>
+<li>gestion de session difficile</li>
+<li>sécurité : celle de l'OS</li>
+
+</ul></li>
+
+</ul>
+
+<p>
+<b>Obsolète</b>
+</p>
+
+<aside class="notes">
+<p>
+Exemple de problème de sécurité : les processus des programmes
+s'exécutent tous dans le contexte du même utilisateur système, celui
+du serveur Web. Ainsi, une faille sur un des programmes permettant
+d'avoir, par exemple, accès au système de fichier, donnera à
+l'attaquant la maîtrise de tous les autres programmes et leurs
+données. Même si les fichiers "système" du serveur sont à l'abri (le
+serveur Web ne tourne pas en tant que <code>root</code>), les dégats peuvent quand
+même être conséquents.
+</p>
+
+</aside>
+
+</section>
+<section aria-hidden="true" style="display: none;" class="past" id="slide-orgheadline21" hidden="">
+<h4 id="orgheadline21">2. Exécution de programmes "au sein" du serveur HTTP</h4>
+<ul>
+<li>Le serveur HTTP "intègre" des fonctionnalités pour développer des
+applications (via des "<i>plugins</i>" / modules optionnels):
+<ul>
+<li>Langage de programmation "embarqué" (<b>PHP</b>, Python, …)</li>
+<li>Gestion "native" de HTTP</li>
+<li>Génération "facile" de HTML, etc.</li>
+
+</ul></li>
+<li>Exécution dans des <i>threads</i> dédiées (plus efficace que des
+processus à invoquer)</li>
+<li>Transfert des données immédiat : en mémoire, sans passer par l'OS</li>
+
+</ul>
+
+<aside class="notes">
+<dl>
+<dt><b>ENSEIGNANTSSEULEMENT</b></dt><dd>Voir en TP la gestion d'un pool de threads ?</dd>
+
+</dl>
+<p>
+Ce type de technologies est toujours utilisé même s'il n'est pas idéal
+notamment en terme de souplesse pour le déploiement, pour la gestion
+avancée des performances ou de la sécurité.
+</p>
+
+<p>
+Historiquement, pour PHP, on utilisait par exemple beaucoup <code>mod_php</code>
+qui est un <i>plugin</i> pour Apache, qui rendait l'interpréteur PHP et ses
+bibliothèques accessibles en direct.
+</p>
+
+</aside>
+
+</section>
+<section aria-hidden="true" style="display: none;" class="" id="slide-orgheadline22">
+<h4 id="orgheadline22">3. Serveur d'applications séparé</h4>
+<ul>
+<li>Architecture un peu différente</li>
+<li>Le serveur Web gère la charge HTTP et fournit des documents
+statiques (CSS, images, etc.)</li>
+<li>Un (ou plusieurs) serveur(s) d'applications gère(nt) l'exécution des réponses dynamiques
+aux requêtes</li>
+<li>Le serveur HTTP et les serveurs d'application sont connectés de
+façon efficace (si possible)</li>
+<li>Le serveur d'application gère des sessions</li>
+<li>On peut gérer de façon indépendante la partie statique et la partie
+dynamique, notamment pour s'adapter à la charge plus ou moins dynamiquement.</li>
+
+</ul>
+
+<aside class="notes">
+<p>
+Aujourd'hui, dans le monde PHP, avec <code>PHP-FPM</code>, qui devient très répandu, on se rapproche un peu plus de
+ce modèle : serveur Web + serveur d'exécution PHP bien distincts
+(Apache + PHP-FPM ou NginX + PHP-FPM).
+</p>
+
+<p>
+PHP-FPM implémente l'API <a href="https://fr.wikipedia.org/wiki/FastCGI">FastGCI</a> pour la
+communication entre le serveur Web et le serveur d'applications.
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline24">
+<h3 id="orgheadline24">Exemple : PHP</h3>
+<ul>
+<li>Bibliothèques pour spécificités HTTP</li>
+<li>Facile à tester (?)</li>
+<li>Très populaire pour déploiement chez des hébergeurs</li>
+<li>Très permissif sur le style de programmation</li>
+<li>Conserve des mécanismes très proches de la façon d'écrire les
+programmes en scripts CGI</li>
+<li>Serveur d'exécution PHP dédié (PHP-FPM)</li>
+
+</ul>
+
+<aside class="notes">
+<p>
+C'est le langage qu'on va utiliser dans ce cours.
+</p>
+
+<p>
+On utilisera la plate-forme PHP fortement : on exécutera un
+serveur Web basique, directement dans PHP, car on sera dans l'environnement de
+développement et de tests fourni par défaut par Symfony.
+</p>
+
+<p>
+Symfony permettra de faire mieux que certains mécanismes "archaiques"
+de PHP, pour monter en qualité.
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="2" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="past" style="display: none;" id="slide-orgheadline25" hidden="">
+<h3 id="orgheadline25">Contexte d'invocation</h3>
+<ul>
+<li>Données transmises au serveur Web via la requête HTTP
+<ul>
+<li>URL
+<ul>
+<li>Arguments (<i>URL-encoded</i>)</li>
+
+</ul></li>
+<li>En-têtes
+<ul>
+<li><i>Cookies</i></li>
+
+</ul></li>
+<li>Données du contenu de la requête (ex. données de formulaires pour un <code>POST</code>)</li>
+
+</ul></li>
+
+</ul>
+</section>
+<section aria-hidden="true" style="display: none;" class="past" hidden="">
+<ul>
+<li>Le choix du programme à invoquer est déterminé par une combinaison
+d'éléments (a minima via le chemin dans l'URL)
+<ul>
+<li>La configuration du serveur détermine les règles à appliquer</li>
+
+</ul></li>
+
+</ul>
+</section>
+<section aria-hidden="true" style="display: none;" class="">
+<ul>
+<li>Le serveur Web peut filtrer les données reçues dans la requête</li>
+<li>Il invoque un "processus" ou l'exécution d'une fonction sur l'API
+d'un module</li>
+<li>Il transmet les données au programme
+<ul>
+<li>arguments d'un processus (CGI)</li>
+<li>variables d'environnement (CGI)</li>
+<li>paramètres des fonctions des APIs, ou variables du langage de programmation (module intégré)</li>
+
+</ul></li>
+
+</ul>
+
+<aside class="notes">
+<p>
+Quelque soit le langage, la plate-forme, on en revient aux données
+transmises au serveur via HTTP qui sont en général accessibles de
+façon plus ou moins facile à récupérer, via les outils du langage ou
+les bibliothèques.
+</p>
+
+<p>
+Par exemple, en parcourant un tableau contenant des variables globales
+du programme (héritage historique de l'utilisation de variables
+d'environnement Unix au temps des CGI).
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="1" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="past" style="display: none;" id="slide-orgheadline26" hidden="">
+<h3 id="orgheadline26">Résultats d'exécution</h3>
+<ul>
+<li>Résultat d'un programme (POSIX)
+<ul>
+<li>Code de retour système (exécution d'un processus) :
+<ul>
+<li><code>0</code> ou <code>!= 0</code></li>
+
+</ul></li>
+<li>Sortie standard du programme</li>
+<li>Erreur standard ?</li>
+
+</ul></li>
+
+</ul>
+</section>
+<section aria-hidden="true" style="display: none;" class="">
+<ul>
+<li>Conversion en réponse HTTP
+<ul>
+<li>Code de retour -&gt; Code de statut
+<ul>
+<li><code>0</code> -&gt; <code>200</code></li>
+<li><code>!=0</code> -&gt; <code>5xx</code></li>
+
+</ul></li>
+<li>Sorties
+<ul>
+<li>Standard (<code>stdout</code>) telle-quelle : <b>attention au format</b>
+<ul>
+<li><i>Headers</i> : succès, échecs, redirections, …
+<ul>
+<li><i>Cookies</i> : sessions</li>
+
+</ul></li>
+<li><i>Ligne vide</i></li>
+<li><i>Contenu du document</i> :
+<ul>
+<li>HTML</li>
+<li>Autres formats (APIs : JSON, …)</li>
+
+</ul></li>
+
+</ul></li>
+<li>Erreur standard (<code>stderr</code>) : dans les logs du serveur ?</li>
+
+</ul></li>
+
+</ul></li>
+
+</ul>
+
+<aside class="notes">
+<p>
+La plate-forme du langage peut intégrer la gestion de la génération de
+la réponse, sous forme de code de statut HTTP et de messages.
+</p>
+
+<p>
+Attention à la façon dont est générée la sortie du programme. Si on
+mélange l'affichage des en-têtes et du message sans respecter le
+format attendu, les en-têtes seront ignorés.
+</p>
+
+<p>
+Le PHP "basique" pose un certain nombre de problèmes de ce type, qui
+seront résolus avec un <i>framework</i> comme Symfony
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" style="top: 254.5px; display: none;" id="slide-orgheadline34" data-background="#dbdbed" class="center has-light-background">
+<h2 id="orgheadline34">Le programme en lui-même</h2>
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline28">
+<h3 id="orgheadline28">Étapes</h3>
+<ol>
+<li>Récupération d'arguments (décodés depuis la requête HTTP)
+<ul>
+<li>ASCII -&gt; objets d'un langage de programmation</li>
+<li>facilité par le langage et les bibliothèques</li>
+
+</ul></li>
+<li>Traitements</li>
+<li>Code de retour</li>
+<li>Affichages ?
+<ul>
+<li>en-têtes,</li>
+<li>HTML,</li>
+<li>etc.</li>
+
+</ul></li>
+
+</ol>
+
+<aside class="notes">
+<p>
+Les traitements peuvent concerner n'importe quel type de contexte
+d'application, et pas nécessairement ce qu'on détaillera dans le
+cours.
+</p>
+
+<p>
+Même si on illustrera ce cours par des développements sur des
+applications assez classiques de gestion de données présentes dans une
+base de données relationelle, les technos Web peuvent servir à faire
+plein d'autres choses.
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline29">
+<h3 id="orgheadline29">Exemple classique : affichage des résultats d'une requête en BD</h3>
+<ol>
+<li>Décodage des paramètres venant de la requête HTTP pour en faire des
+éléments d'une requêtes SQL (<code>...&nbsp;"WHERE ATTRIBUT&nbsp;=&nbsp;[argument transmis]"&nbsp;...</code>)
+<ul>
+<li>(et récupération de la session ?)</li>
+
+</ul></li>
+<li>Exécution du programme SQL (délégué au SGBD)</li>
+<li>Habillage du résultat en HTML (écrit complètement avec des "<code>PRINT</code>",
+boucle sur résultats, …)</li>
+<li>Écriture sur la "sortie standard"</li>
+
+</ol>
+
+<aside class="notes">
+<p>
+ATTENTION : sécurité =&gt; injections SQL
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline30">
+<h3 id="orgheadline30">Données échangées</h3>
+
+<div class="figure">
+<p><img src="[CSC4101%20Web]%20Slides%20TP2_fichiers/donnees-echangees.png" alt="donnees-echangees.png" title="&quot;Invocation jusqu'au SQL&quot;">
+</p>
+</div>
+
+<aside class="notes">
+<p>
+Les certificats clients comportent aussi des informations
+potentiellement utiles au serveur et à l'application, mais les
+certificats TLS et HTTPS ne sont pas vus en détail dans ce cours.
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline31">
+<h3 id="orgheadline31">En cas de panne ?</h3>
+<ul>
+<li>Si rien de spécial n'est prévu : code de retour <code>5xx</code>
+<ul>
+<li>Erreur standard dans les <i>logs</i> non visibles par le client HTTP</li>
+
+</ul></li>
+<li>Si on souhaite faire mieux : mécanismes d'interception des crashes
+<ul>
+<li>Dépend du langage / <i>framework</i></li>
+<li>Gestion d'<b>exceptions</b>
+<ul>
+<li>Par exemple pour affichage d'une page HTML visualisable dans un
+navigateur, qui complète l'erreur <code>5xx</code></li>
+
+</ul></li>
+
+</ul></li>
+
+</ul>
+
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" style="top: 266.5px; display: none;" id="slide-orgheadline32" data-background="#dbdbed" class="center has-light-background">
+<h3 id="orgheadline32">TP A : Application simple en PHP</h3>
+<aside class="notes">
+<p>
+On ne fait pas un cours de PHP dans le cadre de ce cours. Le
+connaissances en Python et Java devraient être suffisantes pour un
+apprentissage rapide, au moins pour ce qui concerne cet exercice.
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline33">
+<h3 id="orgheadline33">Mise en place environnement TP</h3>
+<ul>
+<li>Commencer les étapes du TP-B (cf. Moodle) :
+<ul>
+<li>Récupération archive code Symfony</li>
+<li>Lancement Eclipse</li>
+
+</ul></li>
+
+</ul>
+
+<aside class="notes">
+<p>
+Les manipulation prennent du temps, si le réseau et les serveurs de
+fichiers NFS sont un peu chargés, donc on initie le tout pour que ça
+se déroule tranquilement pendant la première phase de cours intégré.
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" style="top: 254.5px; display: none;" id="slide-orgheadline42" data-background="#dbdbed" class="center has-light-background">
+<h2 id="orgheadline42">Sessions applicatives</h2>
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline35">
+<h3 id="orgheadline35">Paradoxe : applications sur protocole sans état</h3>
+<ul>
+<li>L'expérience utilisateur suppose une <b>instance unique</b> d'exécution
+d'application, comme dans un programme "sur le bureau"</li>
+
+<li>Pourtant, HTTP est <i>stateless</i> (sans état) : chaque requête recrée un nouveau contexte d'exécution</li>
+
+</ul>
+
+<aside class="notes">
+<p>
+Avec une application sur le bureau, entre deux actions de l'utilisateur,
+ le programme ne change pas d'état et conserve la mémoire des actions 
+(fonction défaire, etc.).
+</p>
+
+<p>
+Avec une application Web, chaque clic sur un lien (ou autres actions) réinitialiserait l'état de l'application à zéro ?
+</p>
+
+<p>
+L'enjeu a été de résoudre cette contradiction en ne réinitialisant pas l'état de l'application à chaque action de l'utilisateur.
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline36">
+<h3 id="orgheadline36">Application peut garder la mémoire</h3>
+<ul>
+<li>Le programme Web peut stocker un état (par ex. en base de données) à la fin de
+chaque réponse à une requête</li>
+<li>Il peut le retrouver au début de la requête suivante
+<ul>
+<li>Le client doit pour cela se faire reconnaître</li>
+
+</ul></li>
+<li>Simule une session d'exécution unique comprenant une séquence
+d'actions de l'utilisateur</li>
+
+</ul>
+
+<aside class="notes">
+<p>
+Besoin de fonctionnalités côté serveur :  pour purger le cache de
+sessions périodiquement, gérer la sécurité …
+</p>
+
+<p>
+Attention aux boutons de retour en arrière du navigateur
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline37">
+<h3 id="orgheadline37">Le client HTTP peut s'identifier</h3>
+<ul>
+<li>Argument d'invocation dans URL</li>
+<li><b>Cookie</b></li>
+<li>…</li>
+
+</ul>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline38">
+<h3 id="orgheadline38">Identification du clients par cookie</h3>
+
+<div class="figure">
+<p><img src="[CSC4101%20Web]%20Slides%20TP2_fichiers/id-session.png" alt="id-session.png" title="&quot;multiples clients et pages&quot;">
+</p>
+</div>
+
+<ul>
+<li>Identifie le client</li>
+<li>Commun à un ensemble d'URLs</li>
+
+</ul>
+
+<aside class="notes">
+<p>
+Identifiant fourni systématiquement au serveur, chaque fois que le
+même client HTTP se connecte
+</p>
+
+<p>
+Attention, pas nécessairement le même utilisateur final : plusieurs
+navigateurs ouverts en même temps sur le même site (sur plusieurs
+machines, ou avec plusieurs profils différents) =&gt; plusieurs cookies.
+</p>
+
+<p>
+Est-ce suffisant pour déterminer tout le contexte d'exécution de
+l'application ?
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline39">
+<h3 id="orgheadline39">Cookies</h3>
+<ul>
+<li>Juste un "jeton" unique sur un certain périmètre (serveur, chemin
+d'URL, application, …)</li>
+<li>Format choisi par le serveur</li>
+<li>Peut contenir complètement un état de l'application : des données, mais <b>taille limitée</b></li>
+<li>Le serveur peut trouver en base de données des données plus
+complètes sur présentation du jeton</li>
+
+</ul>
+
+<aside class="notes">
+<p>
+Attention aux problématiques de sécurité : pas de mot de passe dans un
+Cookie, par exemple.
+</p>
+
+<p>
+Les cookies sont consultables par un attaquant ayant accès aux données
+stockées dans les données d'un profil du navigateur.
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="2" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="past" style="display: none;" id="slide-orgheadline41" hidden="">
+<h3 id="orgheadline41">Stockage d'une session</h3>
+<ul>
+<li>Session stockée sur le serveur (pas contrainte taille)</li>
+<li>Objets de l'application stockés dans la session</li>
+<li>Session retrouvée via un identifiant
+<ul>
+<li>Identifiant fourni par un <i>cookie</i></li>
+
+</ul></li>
+<li>Durée de vie et unicité des sessions au choix du serveur</li>
+
+</ul>
+</section>
+<section aria-hidden="true" style="display: none;" class="past" hidden="">
+
+
+<div class="figure">
+<p><img src="[CSC4101%20Web]%20Slides%20TP2_fichiers/utilisation-session.png" alt="utilisation-session.png" title="&quot;stockage session côté serveur&quot;">
+</p>
+</div>
+
+<aside class="notes">
+<p>
+La session est potentiellement grosse, peut-être stockée en base de
+données, …
+</p>
+
+<p>
+Le "même" document accédé par deux clients présentant des ID
+différents, ne sera peut-être pas le même document, s'il est généré
+dynamiquement en fonction des informations présentes dans la session.
+</p>
+
+<p>
+La plate-forme du langage de programmation rend l'utilisation de la
+session très facile pour le programmeur.
+</p>
+
+<p>
+En pratique, la session n'est pas obligatoirement stockées dans un
+SGBD, mais plus souvent sur un système de fichiers ou dans une mémoire
+partagées (pour la gestion de cohérence si le serveur d'application
+est dans un environnement d'exécution distribuée).
+</p>
+
+</aside>
+
+</section>
+<section aria-hidden="true" style="display: none;" class="" id="slide-orgheadline40">
+<h4 id="orgheadline40">Détails cookie</h4>
+<ul>
+<li>Le serveur crée les cookies et les intégre dans la réponse HTTP</li>
+<li><p>
+Il utilise le champ "header" particulier "<code>Set-Cookie</code>" (sur une
+seule ligne)
+</p>
+<pre class="example">Set-Cookie: &lt;nom&gt;=&lt;valeur&gt;;expires=&lt;Date&gt;;domain=&lt;NomDeDomaine&gt;; path=&lt;Path&gt;; secure
+</pre>
+
+<p>
+Exemple de réponse HTTP :
+</p>
+<pre class="example">HTTP/1.1 200 OK
+Server: Netscape-Entreprise/2.01
+Content-Type: text/html
+Content-Length: 100
+Set-Cookie: clientID=6969;domain=unsite.com; path=/jeux
+</pre></li>
+<li>Ce cookie sera renvoyé avec chaque requête ayant comme URL de début <code>http://www.unsite.com/jeux/...</code></li>
+
+</ul>
+
+<aside class="notes">
+<p>
+Il peut y avoir plusieurs champs "Set-Cookie" dans le message HTTP, afin de
+représenter plusieurs cookies différents.
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" style="top: 174px; display: none;" id="slide-orgheadline45" data-background="#dbdbed" class="center has-light-background">
+<h2 id="orgheadline45">Développer des applis Web</h2>
+<p>
+Intéressons-nous à l'humain :
+</p>
+<ul>
+<li>L'utilisateur</li>
+<li><b>Le programmeur</b></li>
+
+</ul>
+
+<aside class="notes">
+<p>
+On se préoccupera de l'utilisateur dans la séance suivante.
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline43">
+<h3 id="orgheadline43">Challenges</h3>
+<ul>
+<li>Beaucoup de choses à faire
+<ul>
+<li>Comprendre HTTP (requêtes)</li>
+<li>Programmer (la logique métier) dans un langage de haut niveau</li>
+<li>Comment produire des pages Web comme interface de l'application</li>
+
+</ul></li>
+<li><b>Maintenabilité</b></li>
+<li>Qualité de l'expérience utilisateur</li>
+<li>Performances</li>
+<li>Sécurité</li>
+
+</ul>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline44">
+<h3 id="orgheadline44">Méthode</h3>
+<ul>
+<li><b>Ne pas réinventer la roue</b></li>
+<li>Plate-forme / <i>framework</i> de développement (Web)
+<ul>
+<li>Langage(s)</li>
+<li>Outils</li>
+
+</ul></li>
+<li>Orienté Objet ?</li>
+<li>Patrons de conception</li>
+<li>Tests</li>
+<li>Aide de spécialistes (<i>web design</i>, performances)</li>
+
+</ul>
+
+<aside class="notes">
+<p>
+La plupart de ces aspects ne seront pas couvert en détail dans le présent cours.
+</p>
+
+<p>
+Approfondis dans les modules suivants du domaine informatique de la deuxième année (optionnels).
+</p>
+
+<p>
+Développer des applications Web, ça ne doit pas être vraiment différent 
+de développer pour d'autres cas d'usage ou d'autres technologies.
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" style="top: 254.5px; display: none;" id="slide-orgheadline54" data-background="#dbdbed" class="center has-light-background">
+<h2 id="orgheadline54">Patron MVC</h2>
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline46">
+<h3 id="orgheadline46">Patron de conception ?</h3>
+<ul>
+<li>Ne pas réinventer la roue</li>
+<li>Appliquer un cadre méthodologique et technique standard</li>
+
+</ul>
+
+<aside class="notes">
+<p>
+Comment faire mieux que le PHP à papa : faire des applications Web
+maintenables.
+</p>
+
+<p>
+Comme en couture, un patron est un modèle "standard" qui correspond à une
+meilleure pratique du domaine.
+</p>
+
+<p>
+Le patron doit être adapté (à la taille du sujet, par exemple).
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline47">
+<h3 id="orgheadline47">MVC</h3>
+<p>
+Patron architectural "MVC" :
+</p>
+
+<dl>
+<dt>M</dt><dd>Modèle</dd>
+<dt>V</dt><dd>Vue</dd>
+<dt>C</dt><dd>Contrôleur</dd>
+
+</dl>
+
+<aside class="notes">
+<p>
+Dans le cadre de ce cours, on ne détaille pas l'historique et toutes les
+ subtilités de MVC ou ses variantes, mais on l'applique tel que proposé 
+dans Symfony.
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline48">
+<h3 id="orgheadline48">Modèle - Vue</h3>
+<p>
+Modulariser le code pour faciliter la maintenance.
+</p>
+
+<p>
+Distinguons d'abord :
+</p>
+<ul>
+<li>Le <b>modèle</b> : les données applicatives, les objets, etc.
+<ul>
+<li>Côté serveur (PHP, SQL, …)</li>
+
+</ul></li>
+<li>La (les) <b>vue</b> (s) : une façon de présenter ces données dans une application
+(Web)
+<ul>
+<li>Côté serveur et client (PHP, HTML, CSS, JS)</li>
+<li>Plusieurs représentations des mêmes données dans une même application</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline49">
+<h3 id="orgheadline49">Frontière entre Modèle et Vue, côté serveur</h3>
+
+<div class="figure">
+<p><img src="[CSC4101%20Web]%20Slides%20TP2_fichiers/couches-modele-vue.png" alt="couches-modele-vue.png" title="&quot;Modèle et vue dans couches&quot;">
+</p>
+</div>
+
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline50">
+<h3 id="orgheadline50">Modèle - Vue</h3>
+<p>
+Première étape : séparer le code
+</p>
+
+
+<div class="figure">
+<p><img src="[CSC4101%20Web]%20Slides%20TP2_fichiers/modele-vue.png" alt="modele-vue.png" title="&quot;Modèle et vue simples&quot;">
+</p>
+</div>
+
+<aside class="notes">
+<p>
+On peut faire évoluer le modèle de façon transparente pour les
+utilisateurs.
+</p>
+
+<p>
+Inversement, on peut faire évoluer l'ergonomie de l'application sans
+changer le modèle (passage d'interface texte ou <i>desktop</i> à pages Web, par exemple)
+</p>
+
+</aside>
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline51">
+<h3 id="orgheadline51">Modèle - Vue - Contrôleur</h3>
+<p>
+Deuxième étape : ajout d'un contrôleur qui gère la logique de
+l'application (enchainements dans l'interface graphique)
+</p>
+
+
+<div class="figure">
+<p><img src="[CSC4101%20Web]%20Slides%20TP2_fichiers/modele-vue-controleur.png" alt="modele-vue-controleur.png" title="&quot;Modèle, vue et contrôleur&quot;">
+</p>
+</div>
+
+<aside class="notes">
+<p>
+C'est ce Contrôleur qui est plus spécifiquement dépendant du choix des
+technos Web, et qui sera mis en oeuvre par un <i>Framework</i> de
+développement Web particulier (pour nous Symfony)
+</p>
+
+<p>
+Le modèle peut être typiquement du SQL classique ou du PHP objet pas
+forcément lié à Symfony.
+</p>
+
+<p>
+Idem pour les pages Web, qui peuvent être codées à l'ancienne ou avec un
+système de templates
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline52">
+<h3 id="orgheadline52">Rétroaction avec l'utilisateur</h3>
+<p>
+Boucle de rétroaction qui est au cœur du fonctionnement de l'application
+</p>
+
+
+<div class="figure">
+<p><img src="[CSC4101%20Web]%20Slides%20TP2_fichiers/MVC-user.png" alt="MVC-user.png" title="&quot;Modèle, vue, contrôleur et utilisateur&quot;">
+</p>
+</div>
+
+<aside class="notes">
+<p>
+Ce schéma est typiquement le même dans tous les systèmes d'interface
+utilisateur. Pas uniquement en application Web
+</p>
+
+<p>
+Le contrôleur intègre une gestion événementielle : style de
+<b>programmation événementielle</b> : réflexes (<i>callbacks</i>) réagissant à des événements
+correspondant aux actions de l'utilisateur
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline53">
+<h3 id="orgheadline53">MVC Web</h3>
+
+<div class="figure">
+<p><img src="[CSC4101%20Web]%20Slides%20TP2_fichiers/couches-MVC.png" alt="couches-MVC.png" title="&quot;MVC dans les couches Web&quot;">
+</p>
+</div>
+
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" style="top: 254.5px; display: none;" id="slide-orgheadline59" data-background="#dbdbed" class="center has-light-background">
+<h2 id="orgheadline59"><i>Framework</i> Symfony</h2>
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline55">
+<h3 id="orgheadline55">Symfony</h3>
+<p>
+<a href="https://symfony.com/">https://symfony.com/</a>
+</p>
+
+<ul>
+<li><i>Framework</i> PHP</li>
+<li>Logiciel libre</li>
+<li>Édité par SensioLabs (<i>Made in France</i>)</li>
+<li>MVC</li>
+<li>Populaire</li>
+<li>Souple</li>
+<li>Portable</li>
+
+</ul>
+
+<aside class="notes">
+<dl>
+<dt><b>ENSEIGNANTSSEULEMENT</b></dt><dd>Mentionner les success stories : blabla car, <a href="http://symfony.com/showcase/">http://symfony.com/showcase/</a> …</dd>
+
+</dl>
+
+<p>
+<i>Framework</i> : ensemble de bibliothèques, mais aussi une façon de
+concevoir l'architecture de l'application
+</p>
+
+<p>
+Extrait de <a href="http://symfony.com/fr/explained-to-a-developer">http://symfony.com/fr/explained-to-a-developer</a> :
+</p>
+
+<p>
+<i>Un framework pour simplifier les developpements</i>
+</p>
+
+<p>
+<i>Un framework vous aide à mieux travailler (développements structurés)
+ et à travailler plus rapidement (réutilisation de modules génériques). 
+Un framework facilite la maintenance à long terme ainsi que 
+l'évolutivité en se conformant aux normes de développement standard. Le 
+respect des normes de développement simplifie également l'intégration et
+ l'interfaçage de l'application avec le reste du système d'information.</i>
+</p>
+
+<p>
+<i>Pourquoi Symfony?</i>
+</p>
+
+<p>
+<i>Symfony est un environnement stable de développement reconnu à 
+l'international. Symfony est soutenu par SensioLabs, une entreprise avec
+ plus de 13 ans d'expérience dans le développement web, ainsi que par 
+une communauté internationale et dynamique qui assurent sa longévité. Un
+ environnement innovant et simple d'utilisation grace à l'intégration de
+ solutions créées dans d'autres environnements telle que l'injection de 
+dépendance (repris de Java) et des solutions spécifiquement développées 
+telles que la Web Debug Toolbar ou bien le Web Profiler. Enfin, en 
+adoptant des normes de facto, Symfony ne vous limite pas à son 
+environnement, mais vous permet de choisir les composants logiciels que 
+vous souhaitez utiliser.</i>
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline56">
+<h3 id="orgheadline56">Documentation Symfony</h3>
+<p>
+<b>RTFM</b>
+</p>
+
+<ol>
+<li>La documentation Symfony</li>
+<li>StackExchange et autres forums</li>
+
+</ol>
+
+<p>
+ATTENTION aux versions des logiciels et documentations
+</p>
+
+<aside class="notes">
+<p>
+Réflexe : lire la doc, lire la doc, et encore lire la doc !
+</p>
+
+<p>
+Pas la peine de l'imprimer, mais aussi possible (livres PDF / <i>ebook</i>)
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline57">
+<h3 id="orgheadline57">MVC dans Symfony</h3>
+<p>
+Cf. documentation du <i>Symfony Book</i> :
+</p>
+
+<p>
+<a href="http://symfony.com/doc/current/book/http_fundamentals.html">Symfony and HTTP Fundamentals</a>
+</p>
+
+<p>
+(ou <a href="http://documentation-symfony.fr/book/http_fundamentals.html">traduit en français</a> ?)
+</p>
+
+<aside class="notes">
+<p>
+Prendre le temps de lire la documentation.
+</p>
+
+<p>
+Prendre le temps de <a href="http://catb.org/%7Eesr/faqs/smart-questions.html">poser des questions</a> (ou <a href="http://www.chiark.greenend.org.uk/%7Esgtatham/bugs-fr.html">rapporter des bugs</a>) si ce
+n'est pas clair. Ces pointeurs sont des manuels fondamentaux de la
+culture <i>hacker</i> d'Internet.
+</p>
+
+<p>
+Cf. Wayback machine si la doc la disparaît.
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline58">
+<h3 id="orgheadline58">Routage d'une requête</h3>
+
+<div class="figure">
+<p><img src="[CSC4101%20Web]%20Slides%20TP2_fichiers/routage-symfony.png" alt="routage-symfony.png" title="&quot;Invocation jusqu'au SQL&quot;">
+</p>
+</div>
+
+<aside class="notes">
+<p>
+Le "point d'entrée" du traitement des requêtes HTTP pour le programmeur d'application devient des <b>méthodes</b> d'une classe <b>Controleur</b> recevant des <b>arguments</b>, et utilisant des bibliothèques addititonnelles.
+</p>
+
+<p>
+Beaucoup plus simple que ce qu'on devait faire en PHP classique.
+</p>
+
+<p>
+Cohérent avec d'autres <i>frameworks</i> pour des langages objets, et avec des modèles de programmation événementielle dans d'autres contextes que les applications Web.
+</p>
+
+<p>
+<b>Orienté Objet FTW !</b>
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" style="top: 254.5px; display: none;" id="slide-orgheadline70" data-background="#dbdbed" class="center has-light-background">
+<h2 id="orgheadline70">Technologie PHP</h2>
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline60">
+<h3 id="orgheadline60">PHP</h3>
+<ul>
+<li>Langage interprété</li>
+<li>Logiciel libre</li>
+<li>Versions : 5.x ou 7 ?</li>
+<li>Bibliothèques
+<ul>
+<li>Langage</li>
+<li>Tierces</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="2" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="past" style="display: none;" id="slide-orgheadline63" hidden="">
+<h3 id="orgheadline63">Langage</h3>
+<p>
+"<i>PHP: Hypertext Preprocessor</i>"
+</p>
+<ul>
+<li>Syntaxe style C / Java</li>
+<li>Objets</li>
+
+</ul>
+
+</section>
+<section aria-hidden="true" style="display: none;" class="past" id="slide-orgheadline61" hidden="">
+<h4 id="orgheadline61">Hello world</h4>
+<div class="org-src-container">
+
+<pre class="src src-php"><span style="color: #008b8b;">&lt;html&gt;</span>
+ <span style="color: #008b8b;">&lt;head&gt;</span>
+  <span style="color: #008b8b;">&lt;title&gt;</span><span style="color: #ff0000; font-weight: bold;">Test</span> <span style="color: #ff0000; font-weight: bold;">PHP</span><span style="color: #008b8b;">&lt;/title&gt;</span>
+ <span style="color: #008b8b;">&lt;/head&gt;</span>
+ <span style="color: #008b8b;">&lt;body&gt;</span>
+ <span style="color: #483d8b;">&lt;?php</span> <span style="color: #a020f0;">echo</span> <span style="color: #8b2252;">'&lt;p&gt;Bonjour le monde&lt;/p&gt;'</span>; <span style="color: #483d8b;">?&gt;</span>
+ <span style="color: #008b8b;">&lt;/body&gt;</span>
+<span style="color: #008b8b;">&lt;/html&gt;</span>
+</pre>
+</div>
+
+<aside class="notes">
+<p>
+PHP permet d'écrire des morceaux de programme à l'intérieur de pages HTML (<i>inline</i>).
+</p>
+
+<p>
+Que peut-on en penser ?
+</p>
+
+</aside>
+
+</section>
+<section aria-hidden="true" style="display: none;" class="" id="slide-orgheadline62">
+<h4 id="orgheadline62">PHP <i>inline</i></h4>
+<ul>
+<li>Mélanger la présentation et le code… <b>c'est mal</b> : maintenable ?</li>
+<li>On verra comment faire autrement dans la prochaine séance.</li>
+
+</ul>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline64">
+<h3 id="orgheadline64">La documentation</h3>
+<ul>
+<li>Le site de PHP : <a href="http://php.net/">http://php.net/</a></li>
+<li>La documentation : <a href="http://php.net/manual/fr/">http://php.net/manual/fr/</a></li>
+
+</ul>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline65">
+<h3 id="orgheadline65">PEAR / Composer</h3>
+<p>
+Écosystème de bibliothèques, composants, <i>frameworks</i>
+</p>
+
+<ul>
+<li>PEAR : <i>PHP Extension and Application Repository</i> : <a href="https://pear.php.net/">https://pear.php.net/</a></li>
+<li>Composer : gestionnaire de dépendances : <a href="https://getcomposer.org/">https://getcomposer.org/</a>
+<ul>
+<li>Packagist : référentiel en ligne de packages
+<a href="https://packagist.org/">https://packagist.org/</a></li>
+
+</ul></li>
+
+</ul>
+
+<aside class="notes">
+<p>
+Composer : équivalent pour PHP de Maven pour Java
+Composer est utilisé par Symfony, mais on n'insiste pas trop dans ce
+cours : pas utilisé obligatoirement en TP 
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="2" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" style="top: 266.5px; display: none;" id="slide-orgheadline68" class="center past" hidden="">
+<h3 id="orgheadline68">Tester / déployer</h3>
+</section>
+<section aria-hidden="true" style="display: none;" class="past" id="slide-orgheadline66" hidden="">
+<h4 id="orgheadline66">Tester</h4>
+<ul>
+<li>Langage interprété</li>
+<li>Fonctionnalités environnemet de développement / tests de Symfony
+<ul>
+<li>Tests sur serveur Web local, en direct, en rechargement automatique
+des fichiers modifiés</li>
+<li>Base de données locale (SQLite)</li>
+
+</ul></li>
+
+</ul>
+
+<aside class="notes">
+<p>
+Les tests sont particulièrement importants dans un langage interprété.
+</p>
+
+<p>
+Avec un langage compilé (comme Java) un grand nombre de problèmes et de bugs sont résolus lors de la phase de compilation.
+</p>
+
+<p>
+Avec un langage interprété, c'est uniquement quand le programme fonctionne que ceux-ci seront détectés.
+Mieux vaudrait que ça soit en phase de développement plutôt qu'une fois en production.
+</p>
+
+<p>
+Interessant aussi d'utiliser un éditeur ou un environnement de 
+développement intégré offrant un support du langage. Dans ce cours, nous
+ proposons l'utilisation d'Eclipse avec le bundle additionnel pour 
+Symfony.
+</p>
+
+</aside>
+
+</section>
+<section aria-hidden="true" style="display: none;" class="" id="slide-orgheadline67">
+<h4 id="orgheadline67">Déployer</h4>
+<ul>
+<li>Déployer les fichiers de l'application</li>
+<li>Configurer (sécurité : accès direct aux mdp de connexion, etc.)</li>
+<li>Exécution dans <i>mod-php</i> dans Apache par exemple</li>
+<li>SGBDR (PostgreSQL)</li>
+<li>Test de performances, optimisations (<i>pre-fork</i> des threads, etc.)</li>
+
+</ul>
+
+<aside class="notes">
+<p>
+Dans ce cours on n'aborde pas plein de notions liées à la production,
+l'exploitation, notamment en terme de performances et d'optimisation,
+et d'impact sur l'architecture
+</p>
+
+<p>
+On n'aborde pas non-plus les solutions PaaS, qui offrent des avantages
+notamment si on utilise un <i>framework</i> supporté par la plate-forme.
+</p>
+
+</aside>
+
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: block;" class="stack past" hidden="">
+<section aria-hidden="true" style="top: 266.5px; display: block;" id="slide-orgheadline69" data-background="#dbdbed" class="center has-light-background">
+<h3 id="orgheadline69">TP B : Application simple en Symfony</h3>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: block;" class="stack past" hidden="">
+<section aria-hidden="true" style="top: 254.5px; display: block;" id="slide-orgheadline72" data-background="#dbdbed" class="center has-light-background">
+<h2 id="orgheadline72">Postface</h2>
+</section>
+</section>
+<section style="display: block;" class="stack present">
+<section class="present" style="display: block;" id="slide-orgheadline71">
+<h3 id="orgheadline71">Et maintenant</h3>
+<p>
+Installer <b>l'application de démo de Symfony</b> dans votre compte, pour
+être prêt à naviguer dedans (par exemple avec Eclipse) dans les
+prochaines séances.
+</p>
+
+<p>
+<a href="https://github.com/symfony/symfony-demo#installation">https://github.com/symfony/symfony-demo#installation</a>
+</p>
+</section>
+</section>
+</div>
+<div class="backgrounds"><div data-loaded="true" style="display: none; background-image: url(&quot;./media/title-slide-background.png&quot;);" data-background-hash="./media/title-slide-background.pngnullnullnullnullnullnullnullnull" class="slide-background past"></div><div data-loaded="true" style="display: none;" class="slide-background past"></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" data-background-hash="#dbdbednullnullnullnullnullnullnullnull" style="background: rgb(219, 219, 237) none repeat scroll 0% 0%; display: none;" class="slide-background center present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" data-background-hash="#dbdbednullnullnullnullnullnullnullnull" style="background: rgb(219, 219, 237) none repeat scroll 0% 0%; display: none;" class="slide-background center present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background past"></div><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background past"></div><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background past"></div><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" data-background-hash="#dbdbednullnullnullnullnullnullnullnull" style="background: rgb(219, 219, 237) none repeat scroll 0% 0%; display: none;" class="slide-background center present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background past"></div><div data-loaded="true" style="display: none;" class="slide-background past"></div><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background past"></div><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background past"></div><div data-loaded="true" style="display: none;" class="slide-background past"></div><div data-loaded="true" style="display: none;" class="slide-background past"></div><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background past"></div><div data-loaded="true" style="display: none;" class="slide-background past"></div><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background past"></div><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" data-background-hash="#dbdbednullnullnullnullnullnullnullnull" style="background: rgb(219, 219, 237) none repeat scroll 0% 0%; display: none;" class="slide-background center present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" data-background-hash="#dbdbednullnullnullnullnullnullnullnull" style="background: rgb(219, 219, 237) none repeat scroll 0% 0%; display: none;" class="slide-background center present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" data-background-hash="#dbdbednullnullnullnullnullnullnullnull" style="background: rgb(219, 219, 237) none repeat scroll 0% 0%; display: none;" class="slide-background center present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background past"></div><div data-loaded="true" style="display: none;" class="slide-background past"></div><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" data-background-hash="#dbdbednullnullnullnullnullnullnullnull" style="background: rgb(219, 219, 237) none repeat scroll 0% 0%; display: none;" class="slide-background center present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" data-background-hash="#dbdbednullnullnullnullnullnullnullnull" style="background: rgb(219, 219, 237) none repeat scroll 0% 0%; display: none;" class="slide-background center present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" data-background-hash="#dbdbednullnullnullnullnullnullnullnull" style="background: rgb(219, 219, 237) none repeat scroll 0% 0%; display: none;" class="slide-background center present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" data-background-hash="#dbdbednullnullnullnullnullnullnullnull" style="background: rgb(219, 219, 237) none repeat scroll 0% 0%; display: none;" class="slide-background center present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background past"></div><div data-loaded="true" style="display: none;" class="slide-background past"></div><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background center past"></div><div data-loaded="true" style="display: none;" class="slide-background past"></div><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: block;" class="slide-background stack past"><div data-loaded="true" data-background-hash="#dbdbednullnullnullnullnullnullnullnull" style="background: rgb(219, 219, 237) none repeat scroll 0% 0%; display: block;" class="slide-background center present"></div></div><div data-loaded="true" style="display: block;" class="slide-background stack past"><div data-loaded="true" data-background-hash="#dbdbednullnullnullnullnullnullnullnull" style="background: rgb(219, 219, 237) none repeat scroll 0% 0%; display: block;" class="slide-background center present"></div></div><div data-loaded="true" style="display: block;" class="slide-background stack present"><div data-loaded="true" style="display: block;" class="slide-background present"></div></div></div><div style="display: block;" class="progress"><span style="width: 840px;"></span></div><aside style="display: block;" class="controls"><button class="navigate-left enabled" aria-label="previous slide"></button><button class="navigate-right" aria-label="next slide"></button><button class="navigate-up" aria-label="above slide"></button><button class="navigate-down" aria-label="below slide"></button></aside><div style="display: block;" class="slide-number"><span class="slide-number-a">74</span></div><div data-prevent-swipe="" class="speaker-notes"></div><div class="pause-overlay"></div><div aria-atomic="true" aria-live="polite" id="aria-status-div" style="position: absolute; height: 1px; width: 1px; overflow: hidden; clip: rect(1px, 1px, 1px, 1px);">
+Et maintenant
+
+Installer l'application de démo de Symfony dans votre compte, pour
+être prêt à naviguer dedans (par exemple avec Eclipse) dans les
+prochaines séances.
+
+
+
+https://github.com/symfony/symfony-demo#installation
+
+</div></div>
+<script src="[CSC4101%20Web]%20Slides%20TP2_fichiers/head.js"></script>
+<script src="[CSC4101%20Web]%20Slides%20TP2_fichiers/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: false,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+overview: true,
+margin: 0.00,
+
+theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+transition: Reveal.getQueryHash().transition || 'fade', // default/cube/page/concave/zoom/linear/fade/none
+transitionSpeed: 'fast',
+multiplex: {
+    secret: '', // null if client
+    id: '', // id, obtained from socket.io server
+    url: '' // Location of socket.io server
+},
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: '../reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+ { src: '../reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: '../reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: '../reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+ { src: '../reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }]
+});
+</script>
+
+
+</body></html>

@@ -1,0 +1,37 @@
+{% extends 'blog/blogbase.html.twig' %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block main %}
+    <h1>{{ post.title }}</h1>
+    
+    <div class="date">{{ post.publishedAt|localizeddate('medium', 'short', null, 'UTC') }}</div>
+    <div class="body">
+    	{{ post.summary }}
+    	
+        {{ post.content|md2html }}
+        
+        <a href="{{ path('admin_post_edit', {'postid': post.id}) }}">Modifier</a>
+        
+        <h2>Comments:</h2>
+        <div class="comments">
+        
+        {{ form_start(commentform) }}
+        {{ form_widget(commentform) }}
+        {{ form_end(commentform) }}
+        
+        <ul>
+        {% for comment in post.comments %}
+        {% dump(comment) %}
+        	<li>
+        		<a href="{{ path('app_blog_showcomment', {'id': post.id, 'comment_id': comment.id}) }}">
+        			<strong>By {{ comment.authorEmail }} on {{ comment.publishedAt|localizeddate('medium', 'short', null, 'UTC') }}:</strong>
+        		</a>
+        		<br>
+        	    {{ comment.content }}
+        	</li>
+        {% endfor %}
+        </ul>
+        </div>
+    </div>
+{% endblock %}

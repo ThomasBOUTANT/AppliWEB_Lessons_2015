@@ -1,0 +1,11 @@
+{% extends 'blog/blogbase.html.twig' %}
+
+
+{% block main %}
+    <h1>New blog post</h1>
+	
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ form_end(form) }}
+
+{% endblock %}

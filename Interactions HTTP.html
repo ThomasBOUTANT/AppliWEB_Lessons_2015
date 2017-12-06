@@ -1,0 +1,591 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- saved from url=(0078)http://moodle.tem-tsp.eu/pluginfile.php/51865/mod_resource/content/1/TP-C.html -->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!-- 2016-09-14 mer. 17:05 -->
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interactions HTTP</title>
+<meta name="generator" content="Org-mode">
+<meta name="author" content="Olivier Berger">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Interactions HTTP</h1>
+<div id="table-of-contents">
+<h2>Table des matières</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="http://moodle.tem-tsp.eu/pluginfile.php/51865/mod_resource/content/1/TP-C.html#orgheadline1">1. Objectif</a></li>
+<li><a href="http://moodle.tem-tsp.eu/pluginfile.php/51865/mod_resource/content/1/TP-C.html#orgheadline3">2. Utilisation du client cURL en ligne de commande</a>
+<ul>
+<li><a href="http://moodle.tem-tsp.eu/pluginfile.php/51865/mod_resource/content/1/TP-C.html#orgheadline2">2.1. Retour dans le temps</a></li>
+</ul>
+</li>
+<li><a href="http://moodle.tem-tsp.eu/pluginfile.php/51865/mod_resource/content/1/TP-C.html#orgheadline4">3. Redirections HTTP</a></li>
+<li><a href="http://moodle.tem-tsp.eu/pluginfile.php/51865/mod_resource/content/1/TP-C.html#orgheadline11">4. Connexion à des API Web</a>
+<ul>
+<li><a href="http://moodle.tem-tsp.eu/pluginfile.php/51865/mod_resource/content/1/TP-C.html#orgheadline9">4.1. Accès en lecture seule</a>
+<ul>
+<li><a href="http://moodle.tem-tsp.eu/pluginfile.php/51865/mod_resource/content/1/TP-C.html#orgheadline5">4.1.1. JsonTest</a></li>
+<li><a href="http://moodle.tem-tsp.eu/pluginfile.php/51865/mod_resource/content/1/TP-C.html#orgheadline6">4.1.2. Test d'une API de service de blog</a></li>
+<li><a href="http://moodle.tem-tsp.eu/pluginfile.php/51865/mod_resource/content/1/TP-C.html#orgheadline7">4.1.3. Service de recherche d'adresse Nominatim d'OpenStreetMap :</a></li>
+<li><a href="http://moodle.tem-tsp.eu/pluginfile.php/51865/mod_resource/content/1/TP-C.html#orgheadline8">4.1.4. Services avec authentification préalable</a></li>
+</ul>
+</li>
+<li><a href="http://moodle.tem-tsp.eu/pluginfile.php/51865/mod_resource/content/1/TP-C.html#orgheadline10">4.2. Accès en modification</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgheadline1" class="outline-2">
+<h2 id="orgheadline1"><span class="section-number-2">1</span> Objectif</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+L'objectif de cet exercice est d'utiliser HTTP pour communiquer avec
+des serveurs HTTP, en explorant un certain nombre de possibilités
+utiles.
+</p>
+
+<p>
+Dans cet exercice, on interagira aussi avec des interfaces de
+services en ligne accesibles sur HTTP, utilisables par des clients de
+type programme, et non avec des sites Web consultables par des
+humains. Ce type d'interface est appelé API (<i>Application Programming
+Interface</i>) et destiné à produire des données structurées plutôt que
+des documents hypertextuels.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline3" class="outline-2">
+<h2 id="orgheadline3"><span class="section-number-2">2</span> Utilisation du client cURL en ligne de commande</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+La commande <code>curl</code> (<code>man curl</code>) est un client HTTP universel
+permettant notamment de tester des services HTTP via la ligne de
+commande.
+</p>
+
+<p>
+Il est parfois possible d'interagir avec des API Web avec un
+navigateur Web, mais par défaut, le navigateur a tendance à formater
+les requêtes en insérant des en-têtes potentiellement superflus ou
+indésirables, qui correspondent à la navigation sur des pages Web.
+</p>
+
+<p>
+À l'inverse, cURL permet de contrôler précisément le contenu des
+requêtes HTTP et d'accéder à tous les paramètres de la réponse
+transmise par le serveur, et ne présuppose pas qu'on souhaite accéder
+à des pages HTML.
+</p>
+
+
+<ol class="org-ol">
+<li><p>
+Tester l'accès au site <code>perdu.com</code> avec cURL :
+</p>
+<div class="org-src-container">
+
+<pre class="src src-sh">curl http://perdu.com/
+</pre>
+</div></li>
+
+<li>Tester le rôle de l'option <code>-v</code>.</li>
+
+<li><p>
+Tester la combinaison d'options suivante qui affiche encore plus de diagnostic sur le protocole HTTP :
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-sh">curl -s --trace-ascii - http://perdu.com/ 2&gt;&amp;1 | less
+</pre>
+</div>
+
+<p>
+<i>Rappel : la redirection de l'erreur standard vers la sortie standard utilisée ci-dessus permet de tout voir dans le paginateur <code>less</code></i>
+</p>
+
+<p>
+L'option <code>-s</code> évite l'affichage de la barre de progression, alors que <code>--trace-ascii -</code> affiche une trace des paquets échangés sur la sortie du programme.
+</p></li>
+
+<li><p>
+Récupérez le contenu de la fiche programme du cours avec curl :
+</p>
+<div class="org-src-container">
+
+<pre class="src src-sh">curl -v <span style="color: #8b2252;">"http://enseignements.telecom-sudparis.eu/fiche.php?m=20384&amp;lg=fr"</span>
+</pre>
+</div>
+
+<p>
+<i>Rappel : l'utilisation des quotes (") permet de protéger contre l'interprétation par le shell des caractères spéciaux présents dans l'URL comme <code>?</code> ou <code>&amp;</code>.</i>
+</p></li>
+
+<li>Essayez de récupérer la version anglaise correspondante, en changeant l'argument <code>lg</code> du script.</li>
+</ol>
+
+<p>
+<b>Note</b> : cURL offre des fonctions intéressantes pour la
+prévisualisation du contenu HTML, en supportant la colorisation, s'il
+est lancé depuis un terminal compatible (ex. <code>gnome-terminal</code>)
+</p>
+
+<p>
+Exemple :
+</p>
+<div class="org-src-container">
+
+<pre class="src src-sh">curl http://wttr.in/
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgheadline2" class="outline-3">
+<h3 id="orgheadline2"><span class="section-number-3">2.1</span> Retour dans le temps</h3>
+<div class="outline-text-3" id="text-2-1">
+<ul class="org-ul">
+<li>Tester l'accès (avec <code>curl</code>) au premier site Web initial : <a href="http://info.cern.ch/hypertext/WWW/FAQ/Bootstrap.html">http://info.cern.ch/hypertext/WWW/FAQ/Bootstrap.html</a></li>
+<li>Noter les headers de date de dernière modification.</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline4" class="outline-2">
+<h2 id="orgheadline4"><span class="section-number-2">3</span> Redirections HTTP</h2>
+<div class="outline-text-2" id="text-3">
+<ol class="org-ol">
+<li>Testez l'accès à l'URL <a href="http://www-inf.int-evry.fr/">http://www-inf.int-evry.fr/</a> dans un navigateur, et vérifiez où vous arrivez, et le chemin suivi.</li>
+
+<li><p>
+Testez ensuite avec <code>curl</code> avec ou sans l'option <code>-L</code>, qui permet de suivre les redirections indiquées par le serveur.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-sh">curl -v -L http://www-inf.int-evry.fr/
+</pre>
+</div></li>
+</ol>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline11" class="outline-2">
+<h2 id="orgheadline11"><span class="section-number-2">4</span> Connexion à des API Web</h2>
+<div class="outline-text-2" id="text-4">
+</div><div id="outline-container-orgheadline9" class="outline-3">
+<h3 id="orgheadline9"><span class="section-number-3">4.1</span> Accès en lecture seule</h3>
+<div class="outline-text-3" id="text-4-1">
+</div><div id="outline-container-orgheadline5" class="outline-4">
+<h4 id="orgheadline5"><span class="section-number-4">4.1.1</span> JsonTest</h4>
+<div class="outline-text-4" id="text-4-1-1">
+<p>
+Expérimentez avec les API de <a href="http://www.jsontest.com/">http://www.jsontest.com/</a> qui permet d'interagir avec des programmes simples qui fournissent des données au format <a href="http://www.json.org/">JSON</a>.
+</p>
+
+<p>
+Exemple :
+</p>
+<div class="org-src-container">
+
+<pre class="src src-sh">curl -v http://ip.jsontest.com/
+</pre>
+</div>
+
+<p>
+Vérifiez la valeur de l'en-tête <code>Content-Type</code> renvoyé par le serveur.
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline6" class="outline-4">
+<h4 id="orgheadline6"><span class="section-number-4">4.1.2</span> Test d'une API de service de blog</h4>
+<div class="outline-text-4" id="text-4-1-2">
+<p>
+Expérimentez avec <a href="http://jsonplaceholder.typicode.com/">http://jsonplaceholder.typicode.com/</a> qui simule une API d'application de blog, pour par exemple :
+</p>
+
+<dl class="org-dl">
+<dt>afficher une ressource</dt><dd><code>http://jsonplaceholder.typicode.com/posts/1</code></dd>
+<dt>lister des ressources</dt><dd><code>http://jsonplaceholder.typicode.com/posts</code></dd>
+</dl>
+</div>
+</div>
+
+<div id="outline-container-orgheadline7" class="outline-4">
+<h4 id="orgheadline7"><span class="section-number-4">4.1.3</span> Service de recherche d'adresse Nominatim d'OpenStreetMap :</h4>
+<div class="outline-text-4" id="text-4-1-3">
+<p>
+Exemples :
+</p>
+<dl class="org-dl">
+<dt>New-York</dt><dd><code>http://nominatim.openstreetmap.org/reverse?format=xml&amp;lat=40.714224&amp;lon=-73.961452&amp;zoom=18&amp;addressdetails=1</code></dd>
+<dt>Tour eiffel</dt><dd><code>http://nominatim.openstreetmap.org/reverse?format=xml&amp;lat=48.858518&amp;lon=2.294524&amp;zoom=18&amp;addressdetails=1</code></dd>
+<dt>…</dt><dd></dd>
+</dl>
+</div>
+</div>
+
+<div id="outline-container-orgheadline8" class="outline-4">
+<h4 id="orgheadline8"><span class="section-number-4">4.1.4</span> Services avec authentification préalable</h4>
+<div class="outline-text-4" id="text-4-1-4">
+<p>
+La plupart des API publiques sont soumises à des restrictions d'accès,
+même si leur usage est gratuit, notamment pour éviter la surcharge des
+services. Cela permet de contrer notamment des attaques de type DDOS
+(<i>Distributed Denial Of Service</i>) qui saturent les serveurs HTTP.
+</p>
+
+<p>
+Différentes techniques existent pour permettre des connexions aux
+seuls clients HTTP autorisés (sujet abordé dans une séance
+ultérieure). Une technique simple consiste à fournir dans l'argument
+d'une URL un jeton correspondant à un client particulier.
+</p>
+
+<p>
+Avant de pouvoir utiliser le service, on doit créer préalablement un compte, et récupérer ensuite un jeton.
+</p>
+
+
+<p>
+Expérimentez avec l'API des stations vélib de JCDecaux <a href="https://developer.jcdecaux.com/#/opendata/vls?page=getstarted">https://developer.jcdecaux.com/#/opendata/vls?page=getstarted</a> en travail hors-présentiel (délai de réception du mail de création de compte, …).
+</p>
+
+<p>
+Exemple:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-sh">curl -s -v https://api.jcdecaux.com/vls/v1/stations?<span style="color: #a0522d;">contract</span>=paris&amp;<span style="color: #a0522d;">apiKey</span>=91f170cdabb4c3227116c3e871a63e8d3ad148ee
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline10" class="outline-3">
+<h3 id="orgheadline10"><span class="section-number-3">4.2</span> Accès en modification</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+Jusqu'ici, nous avons utilisé uniquement des requêtes avec la méthode GET (par défaut dans <code>curl</code>).
+</p>
+
+<p>
+On peut également interagir avec les APIs pour transmettre des données, par exemple via la méthode <code>POST</code>.
+</p>
+
+<p>
+Par exemple, pour créer un nouveau <i>post</i> dans le blog, on fournira les données de ce message sur l'URL <code>http://jsonplaceholder.typicode.com/posts</code>, sous forme d'un fichier JSON :
+</p>
+<pre class="example">{
+  "title": "Vive INT", 
+  "body": "roulaize", 
+  "userId": 1
+}
+</pre>
+
+<p>
+Le document suivant donne quelques exemples en javascript : <a href="https://github.com/typicode/jsonplaceholder#how-to">https://github.com/typicode/jsonplaceholder#how-to</a>, mais nous pouvons les adapter pour un client HTTP quelconque.
+</p>
+
+<p>
+Par exemple, on peut utiliser <code>curl</code> pour transmettre des données via l'option <code>-d</code>. 
+</p>
+
+<p>
+<b>Attention</b> : bien échapper les différents types de quote, pour que le JSON parvienne correctement au serveur (voir l'exemple ci-dessous), sous peine d'erreurs <code>500</code> en pagaille !
+</p>
+
+<p>
+On précise aussi le format des données transmises via l'utilisation de l'en-tête de requête <code>Content-Type</code> (ici <code>application/json</code> pour du JSON).
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-sh">curl -H <span style="color: #8b2252;">"Content-Type: application/json"</span> -X POST -d <span style="color: #8b2252;">'{"title": "Vive INT", "body": "roulaize", "userId": 1}'</span> http://jsonplaceholder.typicode.com/posts
+</pre>
+</div>
+
+<pre class="example">{
+  "title": "Vive INT",
+  "body": "roulaize",
+  "userId": 1,
+  "id": 101
+}
+</pre>
+
+<p>
+L'identifiant du post nouvellement créé est dans la réponse du serveur (champ <code>id</code>). À charge pour le client de décoder cette réponse.
+</p>
+
+<p>
+Consultez les en-têtes complets (de requête et de réponse) pour voir plus précisément ce que répond le serveur, avec <code>curl -v</code> :
+</p>
+
+<pre class="example">*   Trying 104.31.87.157...
+* Connected to jsonplaceholder.typicode.com (104.31.87.157) port 80 (#0)
+&gt; POST /posts HTTP/1.1
+&gt; Host: jsonplaceholder.typicode.com
+&gt; User-Agent: curl/7.50.1
+&gt; Accept: */*
+&gt; Content-Type: application/json
+&gt; Content-Length: 54
+&gt; 
+} [54 bytes data]
+* upload completely sent off: 54 out of 54 bytes
+&lt; HTTP/1.1 201 Created
+&lt; Date: Wed, 14 Sep 2016 14:57:44 GMT
+&lt; Content-Type: application/json; charset=utf-8
+&lt; Content-Length: 75
+&lt; Connection: keep-alive
+&lt; Set-Cookie: __cfduid=db42943c84a0c855d5f7c0cd9f27856fc1473865060; expires=Thu, 14-Sep-17 14:57:40 GMT; path=/; domain=.typicode.com; HttpOnly
+&lt; X-Powered-By: Express
+&lt; Vary: Origin, X-HTTP-Method-Override, Accept-Encoding
+&lt; Access-Control-Allow-Credentials: true
+&lt; Cache-Control: no-cache
+&lt; Pragma: no-cache
+&lt; Expires: -1
+&lt; X-Content-Type-Options: nosniff
+&lt; Etag: W/"4b-PsAh+pVTbjFF6YoOACw7IQ"
+&lt; Via: 1.1 vegur
+&lt; Server: cloudflare-nginx
+&lt; CF-RAY: 2e24b15665e73bb1-CDG
+&lt; 
+{ [75 bytes data]
+* Connection #0 to host jsonplaceholder.typicode.com left intact
+{
+  "title": "Vive INT",
+  "body": "roulaize",
+  "userId": 1,
+  "id": 101
+}
+</pre>
+
+<p>
+Notez l'utilisation du code de réponse <code>201 Created</code> qui confirme au client que l'opération est bien effectuée.
+</p>
+
+<p>
+Pour afficher le détail complet des données transmises par le client lors d'un <code>POST</code> (plutôt que le <code>[54 bytes data]</code> et <code>upload completely sent off: 54 out of 54 bytes</code>), 
+utilisez <code>curl -s --trace-ascii -</code> :
+</p>
+
+<pre class="example">== Info:   Trying 104.31.87.157...
+== Info: Connected to jsonplaceholder.typicode.com (104.31.87.157) port 80 (#0)
+=&gt; Send header, 150 bytes (0x96)
+0000: POST /posts HTTP/1.1
+0016: Host: jsonplaceholder.typicode.com
+003a: User-Agent: curl/7.50.1
+0053: Accept: */*
+0060: Content-Type: application/json
+0080: Content-Length: 54
+0094: 
+=&gt; Send data, 54 bytes (0x36)
+0000: {"title": "Vive INT", "body": "roulaize", "userId": 1}
+== Info: upload completely sent off: 54 out of 54 bytes
+&lt;= Recv header, 22 bytes (0x16)
+0000: HTTP/1.1 201 Created
+&lt;= Recv header, 37 bytes (0x25)
+0000: Date: Wed, 14 Sep 2016 15:03:13 GMT
+&lt;= Recv header, 47 bytes (0x2f)
+0000: Content-Type: application/json; charset=utf-8
+&lt;= Recv header, 20 bytes (0x14)
+0000: Content-Length: 75
+&lt;= Recv header, 24 bytes (0x18)
+0000: Connection: keep-alive
+&lt;= Recv header, 143 bytes (0x8f)
+0000: Set-Cookie: __cfduid=d98a5408fc575044374f95249b8e82b9e1473865393
+0040: ; expires=Thu, 14-Sep-17 15:03:13 GMT; path=/; domain=.typicode.
+0080: com; HttpOnly
+&lt;= Recv header, 23 bytes (0x17)
+0000: X-Powered-By: Express
+&lt;= Recv header, 55 bytes (0x37)
+0000: Vary: Origin, X-HTTP-Method-Override, Accept-Encoding
+&lt;= Recv header, 40 bytes (0x28)
+0000: Access-Control-Allow-Credentials: true
+&lt;= Recv header, 25 bytes (0x19)
+0000: Cache-Control: no-cache
+&lt;= Recv header, 18 bytes (0x12)
+0000: Pragma: no-cache
+&lt;= Recv header, 13 bytes (0xd)
+0000: Expires: -1
+&lt;= Recv header, 33 bytes (0x21)
+0000: X-Content-Type-Options: nosniff
+&lt;= Recv header, 37 bytes (0x25)
+0000: Etag: W/"4b-PsAh+pVTbjFF6YoOACw7IQ"
+&lt;= Recv header, 16 bytes (0x10)
+0000: Via: 1.1 vegur
+&lt;= Recv header, 26 bytes (0x1a)
+0000: Server: cloudflare-nginx
+&lt;= Recv header, 30 bytes (0x1e)
+0000: CF-RAY: 2e24b972e5b00914-CDG
+&lt;= Recv header, 2 bytes (0x2)
+0000: 
+&lt;= Recv data, 75 bytes (0x4b)
+0000: {.  "title": "Vive INT",.  "body": "roulaize",.  "userId": 1,.  
+0040: "id": 101.}
+{
+  "title": "Vive INT",
+  "body": "roulaize",
+  "userId": 1,
+  "id": 101
+}== Info: Connection #0 to host jsonplaceholder.typicode.com left intact
+</pre>
+
+<p>
+Les données envoyées sont affichées en clair :
+</p>
+<pre class="example">=&gt; Send data, 54 bytes (0x36)
+0000: {"title": "Vive INT", "body": "roulaize", "userId": 1}
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Auteur: Olivier Berger</p>
+<p class="date">Created: 2016-09-14 mer. 17:05</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+
+
+</body></html>

@@ -1,0 +1,36 @@
+{% extends 'blog/blogbase.html.twig' %}
+
+{% block title %}List of Posts{% endblock %}
+
+{% block main %}
+
+	{%  if  app.session.has('saveddraft') %}
+	    <p>Vous avez un brouillon en attente : "{{ app.session.get('saveddraft').title }}" <a href="{{ path('blog_editdraft') }}"> le modifier</a></p>
+	{% endif %}
+	
+    <h1>List of Posts</h1>
+    <ul>
+        {% for post in posts %}
+        <li>
+            <a href="{{ path('app_blog_show', {'id': post.id}) }}">
+                {{ post.title }}
+            </a>
+            <br>
+            by <a class="authorlink" href="#" data-toggle="popover" title="Post author" data-content="an author" data-trigger="hover">{{ post.authorEmail }}</a>
+                        
+            <br>
+            <p>{{ post.summary|md2html }}</p>
+        </li>
+        {% else %}
+        <p>Sorry. No posts found</p>
+        {% endfor %}
+    </ul>
+    
+    <div class="paginator">
+        {{ pagerfanta(posts, 'default', { routeName: 'blog_list_paginated' }) }}
+    </div>
+{% endblock %}
+
+{% block pagescript %}
+        	<script src="{{ asset('js/bloglist.js') }}"></script>
+{% endblock %}

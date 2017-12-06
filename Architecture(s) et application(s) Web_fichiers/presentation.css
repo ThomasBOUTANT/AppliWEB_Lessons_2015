@@ -1,0 +1,24 @@
+.reveal section img {
+    border: none;
+    box-shadow: none;
+}
+.reveal pre code {
+    max-height: 600px;
+}
+code {
+    text-decoration: underline dotted;
+}
+
+.pre-on-left-image-on-right .org-src-container
+{
+    overflow:auto;
+    width: 60%;
+}
+
+.pre-on-left-image-on-right .figure
+{
+    float:right;
+    width: 40%;
+}
+
+}

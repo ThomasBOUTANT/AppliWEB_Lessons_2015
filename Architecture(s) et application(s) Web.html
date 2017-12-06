@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html id="slides-page" class=" js no-mobile desktop no-ie ff ff47 cours-section csc4101-section cours-intro-org-section w-1301 gt-240 gt-320 gt-480 gt-640 gt-768 gt-800 gt-1024 gt-1280 lt-1440 lt-1680 lt-1920 no-portrait landscape gradient rgba opacity textshadow multiplebgs boxshadow borderimage borderradius no-cssreflections csstransforms csstransitions no-touch no-retina fontface domloaded" lang="fr"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<title>Architecture(s) et application(s) Web</title>
+<meta name="author" content="(Télécom SudParis)">
+<meta name="description" content="Télécom SudParis">
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="Architecture%28s%29%20et%20application%28s%29%20Web_fichiers/reveal.css">
+
+<link rel="stylesheet" href="Architecture%28s%29%20et%20application%28s%29%20Web_fichiers/simple.css" id="theme">
+
+<link rel="stylesheet" href="Architecture%28s%29%20et%20application%28s%29%20Web_fichiers/presentation.css">
+
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = '../reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+<meta name="copyright" content="Le Web, le protole et le serveur HTTP -- Créateur Dominique Bouillet, mis à jour Chantal Taconet, Olivier Berger  -- 2016"><script src="Architecture%28s%29%20et%20application%28s%29%20Web_fichiers/zoom.js" type="text/javascript"></script><script src="Architecture%28s%29%20et%20application%28s%29%20Web_fichiers/notes.js" type="text/javascript"></script>
+</head>
+<body style="transition: -moz-transform 0.8s ease 0s;">
+<div data-background-transition="fade" data-transition-speed="fast" role="application" class="reveal fade">
+<div style="width: 960px; height: 700px; left: 50%; top: 50%; bottom: auto; right: auto; transform: translate(-50%, -50%) scale(0.961429);" class="slides">
+<section aria-hidden="true" style="display: none;" class="past" data-background-image="./media/title-slide-background.png" id="sec-title-slide" data-background="./media/title-slide-background.png" hidden=""><h1 class="title"></h1><h1></h1><h2>&nbsp;</h2><h2>Architecture(s) et<br>application(s) Web</h2><h3>CSC4101 - cours introduction</h3><h3></h3><h3 class="date">13/09/2016</h3>
+</section>
+
+
+
+
+
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" style="top: 254.5px; display: none;" id="slide-orgheadline3" data-background="#dbdbed" class="center has-light-background">
+<h2 id="orgheadline3">Préface</h2>
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" data-background-image="./media/respecte.jpg" id="slide-orgheadline1" data-background="./media/respecte.jpg" data-background-transition="slide">
+<h3 id="orgheadline1"></h3>
+<aside class="notes">
+<p>
+… et tes profs.
+</p>
+
+<p>
+Et sans wikipedia, d'ailleurs ;-)
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline2">
+<h3 id="orgheadline2">Objectifs de cette séance</h3>
+<ul>
+<li>Positionnement et objectifs du cours</li>
+<li>Terminologie, concepts fondamentaux, acteurs et enjeux</li>
+<li>Organisation du cours</li>
+
+</ul>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" style="top: 254.5px; display: none;" id="slide-orgheadline9" data-background="#dbdbed" class="center has-light-background">
+<h2 id="orgheadline9">Objectifs du cours</h2>
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline6">
+<h3 id="orgheadline6">Enseignement Informatique</h3>
+<p>
+Place de ce cours dans le "tronc commun"
+</p>
+
+<aside class="notes">
+<p>
+Rappel : première édition post-réforme.
+</p>
+
+</aside>
+
+</section>
+<section style="display: none;" aria-hidden="true" class="future" id="slide-orgheadline4" hidden="">
+<h4 id="orgheadline4">1ère année :</h4>
+<ul>
+<li>CSC 3101 Algorithmique et langage de programmation
+<ul>
+<li><b>algorithmique</b></li>
+<li><b>objet</b></li>
+
+</ul></li>
+<li>CSC 3102 Introduction aux systèmes d'exploitation
+<ul>
+<li><b>shell</b></li>
+
+</ul></li>
+<li>CSC 3601 Modélisation, bases de données et systèmes d'information
+<ul>
+<li><b>données</b>, <b>persistence</b>, <b>associations</b></li>
+
+</ul></li>
+<li>PRO 3600 Projet développement informatique
+<ul>
+<li><b>interfaces graphiques/Web</b></li>
+
+</ul></li>
+
+</ul>
+
+</section>
+<section style="display: none;" aria-hidden="true" class="future" id="slide-orgheadline5" hidden="">
+<h4 id="orgheadline5">2ème année :</h4>
+<ul>
+<li><b>CSC 4101 Architecture(s) et application(s) Web</b></li>
+<li>…</li>
+
+</ul>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" style="top: 233px; display: none;" id="slide-orgheadline7" class="center">
+<h3 id="orgheadline7">Question</h3>
+<p>
+<i>Qui a utilisé le Web depuis ce midi ?</i>
+</p>
+
+<aside class="notes">
+<p>
+Utilisation explicite : navigateur Web… mais utilisation implicite :
+APIs pour applications mobiles dans le Smartphone, par exemple…
+</p>
+
+</aside>
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline8">
+<h3 id="orgheadline8">Sondage</h3>
+<ul>
+<li data-fragment-index="0" class="fragment appear visible">HTML</li>
+<li data-fragment-index="1" class="fragment appear visible">PHP</li>
+<li data-fragment-index="2" class="fragment appear visible">CSS</li>
+<li data-fragment-index="3" class="fragment appear visible">JavaScript</li>
+<li data-fragment-index="4" class="fragment appear visible">Navigateur
+<ul>
+<li data-fragment-index="5" class="fragment appear visible">Firefox</li>
+<li data-fragment-index="6" class="fragment appear visible">Chrome</li>
+<li data-fragment-index="7" class="fragment appear visible">Safari</li>
+<li data-fragment-index="8" class="fragment appear visible">Internet Explorer</li>
+<li data-fragment-index="9" class="fragment appear visible">…</li>
+
+</ul></li>
+
+</ul>
+
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" style="top: 209px; display: none;" id="slide-orgheadline31" data-background="#dbdbed" class="center has-light-background">
+<h2 id="orgheadline31">Terminologie, concepts fondamentaux, acteurs et enjeux</h2>
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline11">
+<h3 id="orgheadline11">Architecture</h3>
+<ul>
+<li>Structure générale d'un système informatique
+<ul>
+<li>matériel</li>
+<li><b>logiciel</b></li>
+<li>humain / responsabilités</li>
+
+</ul></li>
+<li>Conception
+<ul>
+<li>Normes ?</li>
+<li>Standards ?</li>
+<li>Bonnes pratiques ?</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+<section style="display: none;" aria-hidden="true" class="future" id="slide-orgheadline10" hidden="">
+<h4 id="orgheadline10">Diagramme général</h4>
+
+<div class="figure">
+<p><img src="Architecture%28s%29%20et%20application%28s%29%20Web_fichiers/architecture.png" alt="architecture.png" title="&quot;Architecture générale des applications Web&quot;">
+</p>
+</div>
+
+<aside class="notes">
+<p>
+On reverra pendant le cours une partie de ces éléments
+</p>
+
+</aside>
+
+</section>
+<section style="display: none;" aria-hidden="true" class="future" hidden="">
+
+<p>
+Plate-forme AWS d'Amazon
+</p>
+
+
+<div class="figure">
+<p><img src="Architecture%28s%29%20et%20application%28s%29%20Web_fichiers/AWS.png" alt="AWS.png" title="&quot;Plate-forme AWS d'Amazon&quot;">
+</p>
+</div>
+
+<aside class="notes">
+<p>
+Aujourd'hui l'hébergement et la conception des applications Web passe
+aussi par des plate-formes dédiées sur le Cloud.
+</p>
+
+<p>
+Cependant, nous ne verrons pas ces plate-formes dans le cadre de ce
+cours d'introduction, en regardant des plate-formes plus
+traditionnelles comme l'hébergement PHP sur un serveur Web "classique".
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" style="top: 233px; display: none;" id="slide-orgheadline12" class="center">
+<h3 id="orgheadline12">Applications</h3>
+<p>
+<i>Quésaco ?</i>
+</p>
+
+<aside class="notes">
+<p>
+À vous. Qu'est-ce qu'une application ?
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline17">
+<h3 id="orgheadline17">Acquis d'apprentissage visés</h3>
+<ol>
+<li>Implémenter une application Client-Serveur en utilisant le protocole HTTP</li>
+<li>Construire une application Web "classique" fonctionnant en partie sur le Client et le Serveur, qui répond à un besoin métier (<i>e-commerce</i>, …)</li>
+<li>L'architecture de cette application est réalisée selon le modèle MVC</li>
+<li>Écrire l'application en utilisant la panoplie d'outils du développeur (<i>framework</i> de développement Web Symfony, outils du développeur dans le navigateur)</li>
+
+</ol>
+
+<aside class="notes">
+<p>
+On va se concentrer principalement sur une catégorie d'architectures,
+classique, bien connue, et sur des technologie d'implémentation très
+courantes.
+</p>
+
+<p>
+Regardons plus en détails chacun de ces AAV.
+</p>
+
+</aside>
+
+</section>
+<section style="display: none;" aria-hidden="true" class="future" id="slide-orgheadline13" hidden="">
+<h4 id="orgheadline13">1. Implémenter une application Client-Serveur en utilisant le protocole HTTP</h4>
+
+<div class="figure">
+<p><img src="Architecture%28s%29%20et%20application%28s%29%20Web_fichiers/client-serveur-http.png" alt="client-serveur-http.png" title="&quot;Dialogue entre client et serveur Web via HTTP&quot;">
+</p>
+</div>
+
+<aside class="notes">
+<p>
+On s'intéressera au modèle client-serveur qui est utilisé par le Web,
+avec le protocole HTTP, mais qui n'est pas spécifique au Web.
+</p>
+
+<p>
+Mots-clés :
+</p>
+<ul>
+<li>protocole</li>
+<li>client</li>
+<li>serveur</li>
+<li>client-serveur</li>
+<li>requête</li>
+<li>réponse</li>
+<li>HTTP</li>
+<li>en-têtes</li>
+<li>codes de retour / réponse</li>
+<li>données</li>
+<li>URL</li>
+<li>ressource</li>
+<li>méthodes</li>
+<li>document</li>
+<li>navigateur</li>
+<li>serveur Web</li>
+<li>hyperlien</li>
+<li>hypertexte</li>
+
+</ul>
+
+</aside>
+
+</section>
+<section style="display: none;" aria-hidden="true" class="future" id="slide-orgheadline14" hidden="">
+<h4 id="orgheadline14">2. Construire une application Web "classique" 
+fonctionnant en partie sur le Client et le Serveur, qui répond à un 
+besoin métier (<i>e-commerce</i>, …)</h4>
+
+<div class="figure">
+<p><img src="Architecture%28s%29%20et%20application%28s%29%20Web_fichiers/generationpages.png" alt="generationpages.png" title="&quot;Construction de pages Web&quot;">
+</p>
+</div>
+
+<aside class="notes">
+<p>
+Les pages d'une application sont construites par une application
+fonctionnant côté serveur, avec des interactions avec le client
+navigateur, qui fait aussi fonctionner certains éléments interactifs
+</p>
+
+</aside>
+
+</section>
+<section style="display: none;" aria-hidden="true" class="future" hidden="">
+
+<p>
+Séparation en couches côté serveur
+</p>
+
+
+<div class="figure">
+<p><img src="Architecture%28s%29%20et%20application%28s%29%20Web_fichiers/multi-couches.png" alt="multi-couches.png" title="&quot;Séparation en couches côté serveur&quot;">
+</p>
+</div>
+
+<aside class="notes">
+<ul>
+<li>application</li>
+<li>état</li>
+<li>transition</li>
+<li>utilisateur</li>
+<li>interface</li>
+<li>ergonomie</li>
+<li>expérience utilisateur</li>
+<li>accessibilité</li>
+<li>présentation</li>
+<li>données</li>
+<li>traitements</li>
+<li>identification</li>
+<li>authentification</li>
+<li>autorisations</li>
+<li>HTML</li>
+<li>CSS</li>
+<li>serveur d'application</li>
+<li>PHP</li>
+<li>DOM</li>
+<li>JavaScript</li>
+<li>sécurité</li>
+<li>session</li>
+<li>cookie</li>
+
+</ul>
+
+</aside>
+
+</section>
+<section style="display: none;" aria-hidden="true" class="future" id="slide-orgheadline15" hidden="">
+<h4 id="orgheadline15">3. L'architecture de cette application est réalisée selon le modèle MVC</h4>
+
+<div class="figure">
+<p><img src="Architecture%28s%29%20et%20application%28s%29%20Web_fichiers/MVC-user.png" alt="MVC-user.png" title="&quot;Modèle MVC&quot;">
+</p>
+</div>
+
+<aside class="notes">
+<ul>
+<li>patron de conception</li>
+<li>Modèle</li>
+<li>Vue</li>
+<li>Contrôleur</li>
+<li>routeur</li>
+
+</ul>
+
+</aside>
+
+</section>
+<section style="display: none;" aria-hidden="true" class="future" id="slide-orgheadline16" hidden="">
+<h4 id="orgheadline16">4. Écrire l'application en utilisant la panoplie d'outils du développeur (<i>framework</i> de développement Web Symfony, outils du développeur dans le navigateur)</h4>
+
+<div class="figure">
+<p><img src="Architecture%28s%29%20et%20application%28s%29%20Web_fichiers/nm-details-annotated.png" alt="nm-details-annotated.png" title="&quot;Inspecteur réseau&quot;">
+</p>
+</div>
+
+<aside class="notes">
+<p>
+Inspecteur réseau dans le navigateur
+</p>
+
+</aside>
+
+</section>
+<section style="display: none;" aria-hidden="true" class="future" hidden="">
+
+<p>
+Routage des requêtes dans Symfony
+</p>
+
+
+<div class="figure">
+<p><img src="Architecture%28s%29%20et%20application%28s%29%20Web_fichiers/routage-symfony.png" alt="routage-symfony.png" title="&quot;Routage des requêtes dans Symfony&quot;">
+</p>
+</div>
+
+<aside class="notes">
+<p>
+Symfony va nous permettre de construire une application permettant de
+programmer en objet le comportement du serveur (Contrôleur, Routeur,
+…)
+</p>
+
+</aside>
+
+</section>
+<section style="display: none;" aria-hidden="true" class="future" hidden="">
+
+<p>
+Exemple de code PHP pour un contrôleur
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-php"><span style="color: #b22222;">//</span><span style="color: #b22222;">...</span>
+<span style="color: #a020f0;">class</span> <span style="color: #228b22;">DefaultController</span> <span style="color: #a020f0;">extends</span> <span style="color: #228b22;">Controller</span>
+{
+    <span style="color: #a020f0;">public</span> <span style="color: #a020f0;">function</span> <span style="color: #0000ff;">formAction</span>(<span style="color: #228b22;">Request</span> $<span style="color: #a0522d;">request</span>)
+    {
+        <span style="color: #b22222;">// </span><span style="color: #b22222;">créer une nouvelle personne avec des données d'exemple</span>
+        $<span style="color: #a0522d;">person</span> = <span style="color: #a020f0;">new</span> <span style="color: #228b22;">Person</span>();
+        $<span style="color: #a0522d;">person</span>-&gt;<span style="color: #000000; background-color: #ffefdb;">setFirstname</span>(<span style="color: #8b2252;">'Marcel'</span>);
+        $<span style="color: #a0522d;">person</span>-&gt;<span style="color: #000000; background-color: #ffefdb;">setLastname</span>(<span style="color: #8b2252;">'Durand'</span>);
+
+        $<span style="color: #a0522d;">form</span> = $<span style="color: #008b8b;">this</span>-&gt;<span style="color: #000000; background-color: #ffefdb;">createFormBuilder</span>($<span style="color: #a0522d;">person</span>)
+            -&gt;<span style="color: #000000; background-color: #ffefdb;">add</span>(<span style="color: #8b2252;">'firstname'</span>, <span style="color: #228b22;">TextType</span>::<span style="color: #008b8b;">class</span>)
+            -&gt;<span style="color: #000000; background-color: #ffefdb;">add</span>(<span style="color: #8b2252;">'lastname'</span>, <span style="color: #228b22;">TextType</span>::<span style="color: #008b8b;">class</span>)
+            -&gt;<span style="color: #000000; background-color: #ffefdb;">add</span>(<span style="color: #8b2252;">'save'</span>, <span style="color: #228b22;">SubmitType</span>::<span style="color: #008b8b;">class</span>, <span style="color: #a020f0;">array</span>(<span style="color: #8b2252;">'label'</span> =&gt; <span style="color: #8b2252;">'Envoi'</span>))
+            -&gt;<span style="color: #000000; background-color: #ffefdb;">getForm</span>();
+
+        <span style="color: #a020f0;">return</span> $<span style="color: #008b8b;">this</span>-&gt;<span style="color: #000000; background-color: #ffefdb;">render</span>(<span style="color: #8b2252;">'default/form.html.twig'</span>, <span style="color: #a020f0;">array</span>(
+            <span style="color: #8b2252;">'form'</span> =&gt; $<span style="color: #a0522d;">form</span>-&gt;<span style="color: #000000; background-color: #ffefdb;">createView</span>(),
+        ));
+    }
+}
+</pre>
+</div>
+
+
+<aside class="notes">
+<ul>
+<li>navigateur</li>
+<li>inspecteur DOM</li>
+<li>inspecteur HTTP</li>
+<li>Symfony</li>
+<li>documentation de référence</li>
+<li>console JS</li>
+<li>PHP</li>
+<li>framework</li>
+<li>templates</li>
+<li>TWig</li>
+<li>Bootstrap</li>
+<li>JQuery</li>
+
+</ul>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline18">
+<h3 id="orgheadline18">Visite express</h3>
+<aside class="notes">
+<p>
+Visite commentée d'une application Web, dans le navigateur, dans un
+profil tout neuf.
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline19">
+<h3 id="orgheadline19">Web comme plate-forme</h3>
+<ul>
+<li>Navigateur
+<ul>
+<li>Moteur de rendu HTML</li>
+<li>Machine virtuelle Javascript</li>
+
+</ul></li>
+<li>Applications client HTTP + (micro) services REST</li>
+<li>Applications natives en HTML5 + CSS + Javascript</li>
+
+</ul>
+
+<p>
+<i>Native apps</i> vs <i>Web apps</i>
+</p>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline22">
+<h3 id="orgheadline22">Historique</h3>
+<p>
+&gt; 25 ans
+</p>
+
+</section>
+<section style="display: none;" aria-hidden="true" class="future" id="slide-orgheadline20" hidden="">
+<h4 id="orgheadline20">Naissance du World Wide Web</h4>
+<small>
+
+<p>
+Vidéo <a href="http://www.computerhistory.org/revolution/the-web/20/385/2221">Naissance du World Wide Web</a> (extraite de l'expo <a href="http://www.computerhistory.org/revolution/the-web/20">Web</a> du <i>Computer History Museum</i>)
+</p>
+</small>
+
+<iframe src="Architecture%28s%29%20et%20application%28s%29%20Web_fichiers/_mNOXDbXr9c.html" allowfullscreen="" frameborder="0" height="480" width="853"></iframe>
+<p>
+<a href="https://www.youtube.com/watch?v=_mNOXDbXr9c">https://www.youtube.com/watch?v=_mNOXDbXr9c</a>
+</p>
+
+
+</section>
+<section style="display: none;" aria-hidden="true" class="future" id="slide-orgheadline21" hidden="">
+<h4 id="orgheadline21">Timeline</h4>
+
+<div class="figure">
+<p><img src="Architecture%28s%29%20et%20application%28s%29%20Web_fichiers/timeline.html" alt="timeline.png">
+</p>
+</div>
+
+<aside class="notes">
+<ul>
+<li>Turing, ENIAC : 1946</li>
+<li>Arpanet : 1969</li>
+<li>TCP/IP : 1983</li>
+<li>WWW : 1989</li>
+<li>Apache : 1995</li>
+<li>Amazon : 1995</li>
+<li>Internet explorer : 1995</li>
+<li>Mozilla : 1998</li>
+<li>Google : 1998</li>
+<li>free.fr : 1999</li>
+<li>Facebook : 2004</li>
+<li>Ajax : 2005</li>
+<li>Amazon EC2 : 2006</li>
+<li>Symfony : 2007</li>
+<li>HTML5 : 2014</li>
+
+</ul>
+
+<p>
+Voir aussi <a href="http://webdirections.org/history/#0">http://webdirections.org/history/#0</a>
+</p>
+
+</aside>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline23">
+<h3 id="orgheadline23">Acteurs</h3>
+<ul>
+<li>W3C</li>
+<li>Mozilla</li>
+<li>Google</li>
+<li>Amazon</li>
+<li>Facebook</li>
+<li>TWitter</li>
+<li>OVH</li>
+<li>…</li>
+
+</ul>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline24">
+<h3 id="orgheadline24">Ouverture</h3>
+<ul>
+<li>Ouverture de l'Internet</li>
+<li>Standards ouverts</li>
+<li>Logiciel libre</li>
+
+</ul>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline30">
+<h3 id="orgheadline30">Importance</h3>
+<div class="outline-text-3" id="text-orgheadline30">
+</div></section>
+<section style="top: 245px; display: none;" aria-hidden="true" id="slide-orgheadline25" class="center future" hidden="">
+<h4 id="orgheadline25"><i>Best-of</i></h4>
+<p>
+Applications Web préférées, vitales ?
+</p>
+
+<aside class="notes">
+nil
+</aside>
+
+</section>
+<section style="display: none;" aria-hidden="true" class="future" id="slide-orgheadline26" hidden="">
+<h4 id="orgheadline26">Bien commun</h4>
+<ul>
+<li data-fragment-index="0" class="fragment appear visible">Wikipedia</li>
+<li data-fragment-index="1" class="fragment appear visible">OpenStreetMap</li>
+<li data-fragment-index="2" class="fragment appear visible">Données ouvertes</li>
+<li data-fragment-index="3" class="fragment appear visible"><i>Wayback machine</i> de l'<i>Internet Archive</i></li>
+
+</ul>
+
+</section>
+<section style="display: none;" aria-hidden="true" class="future" id="slide-orgheadline27" hidden="">
+<h4 id="orgheadline27">Économie</h4>
+<ul>
+<li data-fragment-index="0" class="fragment appear visible">Combien vaut votre profil Facebook ?</li>
+<li data-fragment-index="1" class="fragment appear visible">A quoi sert l'argent donné à Wikipédia ?</li>
+
+</ul>
+
+<aside class="notes">
+<p>
+À vous ?
+</p>
+
+</aside>
+
+</section>
+<section style="display: none;" aria-hidden="true" class="future" id="slide-orgheadline28" hidden="">
+<h4 id="orgheadline28">Menaces, problèmes</h4>
+<ul>
+<li>Asymétrie réseaux</li>
+<li>Centralisation</li>
+<li>Surveillance</li>
+<li><i>Digital labor</i></li>
+<li>Revenus (gratuité, publicité)</li>
+<li>Censure</li>
+<li>Algorithmes (recommendation)</li>
+<li>Accès (haut débit)</li>
+<li>…</li>
+
+</ul>
+
+</section>
+<section style="display: none;" aria-hidden="true" class="future" id="slide-orgheadline29" hidden="">
+<h4 id="orgheadline29"><i>Keep Calm &amp; Relax</i></h4>
+
+<div class="figure">
+<p><img src="Architecture%28s%29%20et%20application%28s%29%20Web_fichiers/chatons.jpg" alt="chatons.jpg">
+</p>
+</div>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" style="top: 254.5px; display: none;" id="slide-orgheadline40" data-background="#dbdbed" class="center has-light-background">
+<h2 id="orgheadline40">Organisation de CSC4101</h2>
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline32">
+<h3 id="orgheadline32">Planning</h3>
+<p>
+env. 3h de cours / semaine réparti sur 8 semaines.
+</p>
+
+<small>
+<!-- This HTML table template is generated by emacs 24.5.1 -->
+<table border="1">
+  <tbody><tr>
+    <td align="left" valign="top">
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+      &nbsp;S1&nbsp;
+    </td>
+    <td align="left" valign="top">
+      &nbsp;S2&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+      &nbsp;S3&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+      &nbsp;S4&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+      &nbsp;S5&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+      &nbsp;S6&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+      &nbsp;S7&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+      &nbsp;S8&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+      &nbsp;S9&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td rowspan="3" align="left" valign="top">
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+      &nbsp;...&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+  </tr>
+  <tr>
+    <td rowspan="2" align="left" valign="top">
+      &nbsp;&nbsp;CM&nbsp;&nbsp;<br>
+      &nbsp;(1/2&nbsp;<br>
+      promo)<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+      &nbsp;CI&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+      &nbsp;CI&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+      &nbsp;CI&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+      &nbsp;CI&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+      &nbsp;CI&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+      &nbsp;CI&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td rowspan="2" align="left" valign="top">
+      &nbsp;TP&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td rowspan="2" align="left" valign="top">
+      &nbsp;TP&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td rowspan="2" align="left" valign="top">
+      &nbsp;TP&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td rowspan="2" align="left" valign="top">
+      &nbsp;&nbsp;CM&nbsp;&nbsp;&nbsp;<br>
+      (promo)<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td rowspan="2" align="left" valign="top">
+      &nbsp;CF&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+  </tr>
+  <tr>
+    <td align="left" valign="top">
+      &nbsp;TP&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+      &nbsp;TP&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+      &nbsp;TP&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+      &nbsp;TP&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+      &nbsp;TP&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td align="left" valign="top">
+      &nbsp;TP&nbsp;&nbsp;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+  </tr>
+</tbody></table>
+</small>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline33">
+<h3 id="orgheadline33">6 séances cours + TP</h3>
+<ol>
+<li data-fragment-index="0" class="fragment appear visible">Le Web, et le protole HTTP</li>
+<li data-fragment-index="1" class="fragment appear visible">Serveur Web, <i>middleware</i> côté serveur, MVC et <i>framework</i> Symfony</li>
+<li data-fragment-index="2" class="fragment appear visible">Interface utilisateur, présentation HTML et CSS, <i>templates</i></li>
+<li data-fragment-index="3" class="fragment appear visible">Formulaires et dynamique de transaction associée</li>
+<li data-fragment-index="4" class="fragment appear visible">Gestion des sessions, autorisations et de la sécurité</li>
+<li data-fragment-index="5" class="fragment appear visible">Interfaces utilisateur dynamiques côté client</li>
+
+</ol>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline34">
+<h3 id="orgheadline34">3 séances TP</h3>
+<p>
+Mini-projet application
+</p>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline35">
+<h3 id="orgheadline35">Contrôle de présence</h3>
+
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" style="top: 266.5px; display: none;" id="slide-orgheadline38" class="center">
+<h3 id="orgheadline38">Équipe pédagogique</h3>
+</section>
+<section style="display: none;" aria-hidden="true" class="future" id="slide-orgheadline36" hidden="">
+<h4 id="orgheadline36">Co-coordinateurs</h4>
+<ul>
+<li>Christian BAC (C103)</li>
+<li>Olivier BERGER (B303)</li>
+
+</ul>
+
+<p>
+Contact : 
+</p>
+<ul>
+<li><code>olivier.berger@telecom-sudparis.eu</code></li>
+
+</ul>
+<p>
+<span class="underline">ET</span> 
+</p>
+<ul>
+<li><code>christian.bac@telecom-sudparis.eu</code></li>
+
+</ul>
+
+</section>
+<section style="display: none;" aria-hidden="true" class="future" id="slide-orgheadline37" hidden="">
+<h4 id="orgheadline37">Responsables de groupes</h4>
+<table rules="groups" frame="hsides" border="2" cellpadding="6" cellspacing="0">
+
+
+<colgroup>
+<col class="org-left">
+
+<col class="org-left">
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">1/A</td>
+<td class="org-left">E. LALLET</td>
+</tr>
+
+<tr>
+<td class="org-left">2/B</td>
+<td class="org-left">B. DEFUDE</td>
+</tr>
+
+<tr>
+<td class="org-left">3/C</td>
+<td class="org-left">C. TACONET</td>
+</tr>
+
+<tr>
+<td class="org-left">4/D</td>
+<td class="org-left">O. BERGER</td>
+</tr>
+
+<tr>
+<td class="org-left">5/E</td>
+<td class="org-left">M. KMIMECH</td>
+</tr>
+
+<tr>
+<td class="org-left">6/F</td>
+<td class="org-left">C. BAC</td>
+</tr>
+
+<tr>
+<td class="org-left">7/G</td>
+<td class="org-left">P. HENNEQUIN</td>
+</tr>
+
+<tr>
+<td class="org-left">8/H</td>
+<td class="org-left">M. GARDIE</td>
+</tr>
+
+<tr>
+<td class="org-left">9/I</td>
+<td class="org-left">W. GAALOUL</td>
+</tr>
+
+<tr>
+<td class="org-left">10/J</td>
+<td class="org-left">C. TACONET</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline39">
+<h3 id="orgheadline39">Ressources pédagogiques</h3>
+<ul>
+<li>Moodle</li>
+
+<li>Slides (Web)</li>
+
+<li>Polys (PDF)</li>
+
+<li>Documentation en anglais</li>
+
+</ul>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline41">
+<h2 id="orgheadline41">Interview guest</h2>
+<p>
+JFG
+</p>
+
+<aside class="notes">
+<p>
+Jean-François Groff (TSP 90), et l'un des premiers à avoir travaillé
+sur le Web avec Tim Berners-Lee au CERN en 1990-1992
+</p>
+
+<p>
+Interview réalisée le 12/09/2016 par Skype
+<a href="https://www.youtube.com/watch?v=S1G6mJ0yxQ0">https://www.youtube.com/watch?v=S1G6mJ0yxQ0</a>
+</p>
+
+</aside>
+
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" style="top: 254.5px; display: none;" id="slide-orgheadline52" data-background="#dbdbed" class="center has-light-background">
+<h2 id="orgheadline52">Ensuite…</h2>
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: none;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: none;" id="slide-orgheadline47">
+<h3 id="orgheadline47">D'ici là première séance TP</h3>
+<p>
+Inventaire de votre utilisation du Web en 24 h
+</p>
+
+<small>
+<table rules="groups" frame="hsides" border="2" cellpadding="6" cellspacing="0">
+
+
+<colgroup>
+<col class="org-left">
+</colgroup>
+
+<colgroup>
+<col class="org-left">
+</colgroup>
+
+<colgroup>
+<col class="org-right">
+</colgroup>
+
+<colgroup>
+<col class="org-left">
+</colgroup>
+
+<colgroup>
+<col class="org-left">
+</colgroup>
+
+<colgroup>
+<col class="org-left">
+</colgroup>
+
+<colgroup>
+<col class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Site</th>
+<th scope="col" class="org-left">Appli</th>
+<th scope="col" class="org-right">Décompte</th>
+<th scope="col" class="org-left">Client</th>
+<th scope="col" class="org-left">Adresse IP</th>
+<th scope="col" class="org-left">Localisation</th>
+<th scope="col" class="org-left">Cookies</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Google search</td>
+<td class="org-left">?</td>
+<td class="org-right">100</td>
+<td class="org-left">Firefox</td>
+<td class="org-left">&nbsp;</td>
+<td class="org-left">&nbsp;</td>
+<td class="org-left">&nbsp;</td>
+</tr>
+
+<tr>
+<td class="org-left">Moodle TEM-TSP</td>
+<td class="org-left">Moodle</td>
+<td class="org-right">4</td>
+<td class="org-left">Firefox</td>
+<td class="org-left">&nbsp;</td>
+<td class="org-left">&nbsp;</td>
+<td class="org-left">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</small>
+
+</section>
+<section style="display: none;" aria-hidden="true" class="future" id="slide-orgheadline42" hidden="">
+<h4 id="orgheadline42">Appli ?</h4>
+<p>
+Pas toujours évident
+</p>
+
+<ul>
+<li>mentions explicites</li>
+<li>headers ou commentaires dans source pages Web</li>
+
+</ul>
+
+</section>
+<section style="display: none;" aria-hidden="true" class="future" id="slide-orgheadline43" hidden="">
+<h4 id="orgheadline43">Adresse IP ?</h4>
+<p>
+<code>man host</code>
+</p>
+
+</section>
+<section style="display: none;" aria-hidden="true" class="future" id="slide-orgheadline44" hidden="">
+<h4 id="orgheadline44">Localisation d'une IP ?</h4>
+<p>
+à vous de trouver… sur le Web ;) (<i>hint</i>: "geoip")
+</p>
+
+<p>
+mais, aucune garantie théorique d'y arriver
+</p>
+
+</section>
+<section style="display: none;" aria-hidden="true" class="future" id="slide-orgheadline45" hidden="">
+<h4 id="orgheadline45">Cookies ?</h4>
+<ul>
+<li>Changer les paramètres du navigateur pour confirmer l'installation
+des cookies</li>
+
+<li>Vérifier dans la boîte à cookies du navigateur</li>
+
+</ul>
+
+</section>
+<section style="display: none;" aria-hidden="true" class="future" id="slide-orgheadline46" hidden="">
+<h4 id="orgheadline46">Client ?</h4>
+<ul>
+<li>Navigateurs</li>
+<li>Applis mobiles ?</li>
+
+</ul>
+
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: block;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: block;" id="slide-orgheadline49">
+<h3 id="orgheadline49">Et maintenant</h3>
+<div class="outline-text-3" id="text-orgheadline49">
+</div><ul class="org-ul"><li><a id="orgheadline48"></a>Si BYOD ?<br><ul>
+<li>Firefox ou Chrome</li>
+<li>bash ?</li>
+<li>install PHP</li>
+<li>install Eclipse</li>
+
+</ul></li></ul>
+
+</section>
+</section>
+<section aria-hidden="true" data-previous-indexv="0" style="display: block;" class="stack past" hidden="">
+<section aria-hidden="true" class="" style="display: block;" id="slide-orgheadline50">
+<h3 id="orgheadline50">Q / R</h3>
+
+</section>
+</section>
+<section style="display: block;" class="stack present">
+<section class="present" style="display: block;" id="slide-orgheadline51">
+<h3 id="orgheadline51">Crédits illustrations et vidéos</h3>
+<ul>
+<li>Vidéo "<a href="http://www.computerhistory.org/revolution/the-web/20/385/2221">Birth of the World Wide Web</a>" © Computer History Museum (used by courtesy of Computer History Museum).</li>
+<li>Remerciements à Jean-François Groff</li>
+<li>Illustration plate-forme Web Amazon AWS : <a href="http://media.amazonwebservices.com/architecturecenter/AWS_ac_ra_web_01.pdf">http://media.amazonwebservices.com/architecturecenter/AWS_ac_ra_web_01.pdf</a></li>
+
+</ul>
+</section>
+</section>
+</div>
+<div class="backgrounds"><div data-loaded="true" style="display: none; background-image: url(&quot;./media/title-slide-background.png&quot;);" data-background-hash="./media/title-slide-background.pngnullnullnullnullnullnullnullnull" class="slide-background past"></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" data-background-hash="#dbdbednullnullnullnullnullnullnullnull" style="background: rgb(219, 219, 237) none repeat scroll 0% 0%; display: none;" class="slide-background center present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none; background-image: url(&quot;./media/respecte.jpg&quot;);" data-background-transition="slide" data-background-hash="./media/respecte.jpgnullnullnullnullnullnullnullslide" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" data-background-hash="#dbdbednullnullnullnullnullnullnullnull" style="background: rgb(219, 219, 237) none repeat scroll 0% 0%; display: none;" class="slide-background center present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div><div data-loaded="true" style="display: none;" class="slide-background future"></div><div data-loaded="true" style="display: none;" class="slide-background future"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background center present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" data-background-hash="#dbdbednullnullnullnullnullnullnullnull" style="background: rgb(219, 219, 237) none repeat scroll 0% 0%; display: none;" class="slide-background center present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div><div data-loaded="true" style="display: none;" class="slide-background future"></div><div data-loaded="true" style="display: none;" class="slide-background future"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background center present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div><div data-loaded="true" style="display: none;" class="slide-background future"></div><div data-loaded="true" style="display: none;" class="slide-background future"></div><div style="display: none;" class="slide-background future"></div><div style="display: none;" class="slide-background future"></div><div style="display: none;" class="slide-background future"></div><div style="display: none;" class="slide-background future"></div><div style="display: none;" class="slide-background future"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div><div data-loaded="true" style="display: none;" class="slide-background future"></div><div data-loaded="true" style="display: none;" class="slide-background future"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div><div data-loaded="true" style="display: none;" class="slide-background center future"></div><div data-loaded="true" style="display: none;" class="slide-background future"></div><div style="display: none;" class="slide-background future"></div><div style="display: none;" class="slide-background future"></div><div style="display: none;" class="slide-background future"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" data-background-hash="#dbdbednullnullnullnullnullnullnullnull" style="background: rgb(219, 219, 237) none repeat scroll 0% 0%; display: none;" class="slide-background center present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background center present"></div><div data-loaded="true" style="display: none;" class="slide-background future"></div><div data-loaded="true" style="display: none;" class="slide-background future"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" data-background-hash="#dbdbednullnullnullnullnullnullnullnull" style="background: rgb(219, 219, 237) none repeat scroll 0% 0%; display: none;" class="slide-background center present"></div></div><div data-loaded="true" style="display: none;" class="slide-background stack past"><div data-loaded="true" style="display: none;" class="slide-background present"></div><div data-loaded="true" style="display: none;" class="slide-background future"></div><div data-loaded="true" style="display: none;" class="slide-background future"></div><div style="display: none;" class="slide-background future"></div><div style="display: none;" class="slide-background future"></div><div style="display: none;" class="slide-background future"></div></div><div data-loaded="true" style="display: block;" class="slide-background stack past"><div data-loaded="true" style="display: block;" class="slide-background present"></div></div><div data-loaded="true" style="display: block;" class="slide-background stack past"><div data-loaded="true" style="display: block;" class="slide-background present"></div></div><div data-loaded="true" style="display: block;" class="slide-background stack present"><div data-loaded="true" style="display: block;" class="slide-background present"></div></div></div><div style="display: block;" class="progress"><span style="width: 1301px;"></span></div><aside style="display: block;" class="controls"><button class="navigate-left enabled" aria-label="previous slide"></button><button class="navigate-right" aria-label="next slide"></button><button class="navigate-up" aria-label="above slide"></button><button class="navigate-down" aria-label="below slide"></button></aside><div style="display: block;" class="slide-number"><span class="slide-number-a">56</span></div><div data-prevent-swipe="" class="speaker-notes"></div><div class="pause-overlay"></div><div aria-atomic="true" aria-live="polite" id="aria-status-div" style="position: absolute; height: 1px; width: 1px; overflow: hidden; clip: rect(1px, 1px, 1px, 1px);">
+Crédits illustrations et vidéos
+
+Vidéo "Birth of the World Wide Web" © Computer History Museum (used by courtesy of Computer History Museum).
+Remerciements à Jean-François Groff
+Illustration plate-forme Web Amazon AWS : http://media.amazonwebservices.com/architecturecenter/AWS_ac_ra_web_01.pdf
+
+
+</div></div>
+<script src="Architecture%28s%29%20et%20application%28s%29%20Web_fichiers/head.js"></script>
+<script src="Architecture%28s%29%20et%20application%28s%29%20Web_fichiers/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: false,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+overview: true,
+margin: 0.00,
+
+theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+transition: Reveal.getQueryHash().transition || 'fade', // default/cube/page/concave/zoom/linear/fade/none
+transitionSpeed: 'fast',
+multiplex: {
+    secret: '', // null if client
+    id: '', // id, obtained from socket.io server
+    url: '' // Location of socket.io server
+},
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: '../reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+ { src: '../reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: '../reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: '../reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+ { src: '../reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }]
+});
+</script>
+
+
+</body></html>

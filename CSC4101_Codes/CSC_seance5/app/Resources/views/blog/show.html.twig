@@ -1,0 +1,56 @@
+{% extends 'blog/blogbase.html.twig' %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block main %}
+    <h1>{{ post.title }}</h1>
+    
+    {{ dump(app.user) }}
+    
+    <strong><div class="date">{{ post.publishedAt|localizeddate('medium', 'short', null, 'UTC') }}</div>
+    by {{ post.authorEmail }}</strong>
+    
+    <div class="body">
+    	{{ post.summary }}
+    	
+        {{ post.content|md2html }}
+        
+        
+        {% if app.user and ( post.isAuthor(app.user) or is_granted('ROLE_ADMIN') ) %}
+                <a href="{{ path('admin_post_edit', {'postid': post.id}) }}">Modifier</a>
+        {% endif %}
+        
+        <h2>Comments:</h2>
+        <div class="comments">
+        
+         {# The 'IS_AUTHENTICATED_FULLY' role ensures that the user has entered
+        his/her credentials (login + password) during this session. If he/she
+        is automatically logged via the 'Remember Me' functionality, he/she won't
+        be able to add a comment.
+        See http://symfony.com/doc/current/cookbook/security/remember_me.html#forcing-the-user-to-re-authenticate-before-accessing-certain-resources
+        #}
+        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+            {{ form_start(commentform) }}
+            {{ form_widget(commentform) }}
+            {{ form_end(commentform) }}
+        {% else %}
+            <p>
+                <a href="{{ path('fos_user_security_login') }}">Log in</a> to publish a comment
+            </p>
+        {% endif %}
+        
+        <ul>
+        {% for comment in post.comments %}
+        {% dump(comment) %}
+        	<li>
+        		<a href="{{ path('app_blog_showcomment', {'id': post.id, 'comment_id': comment.id}) }}">
+        			<strong>By {{ comment.authorEmail }} on {{ comment.publishedAt|localizeddate('medium', 'short', null, 'UTC') }}:</strong>
+        		</a>
+        		<br>
+        	    {{ comment.content }}
+        	</li>
+        {% endfor %}
+        </ul>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'blog/blogbase.html.twig' %}
+
+{% block title %}Comment on {{ post.title }}{% endblock %}
+
+{% block body %}
+    <h1>Comment on {{ post.title }}</h1>
+    
+    <div class="date">{{ comment.publishedAt|localizeddate('medium', 'short', null, 'UTC') }}</div>
+    <div class="body">
+        {% dump(comment) %}
+     			<strong>By {{ comment.authorEmail }}:</strong>
+        		<br>
+        	    {{ comment.content }}
+    </div>
+{% endblock %}

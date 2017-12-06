@@ -1,0 +1,66 @@
+{% extends 'agvoybase.html.twig' %}
+
+{% block main %}
+    	
+	<div class="circuit">
+    	<h2>
+       		{{ circuit.description }}
+       	</h2>
+    	
+    	<h3>Détails</h3>
+		<div class="circuit_details">
+		
+			<p>Description: {{ circuit.description }}</p>
+			
+			<p>Départ de {{ circuit.villeDepart }} pour {{ circuit.dureeCircuit }} j. de voyage à travers le {{ circuit.paysDepart }}, pour terminer à {{ circuit.villeArrivee }}.</p>
+			
+			<h3>Étapes</h3>
+		 	<table>
+		 		<thead>
+					<tr>
+				    	<th>Numéro</th>
+						<th>Ville</th>
+						<th>Nombre jours</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+ 			{% for etape in circuit.etapes %}
+	 		<tr>
+			   <td>{{ etape.numeroEtape }}</td>
+			   <td>{{ etape.villeEtape }}</td> 
+			   <td>{{ etape.nombreJours }} j.</td>
+			</tr>
+			{% endfor %} {# circuit.etapes #}
+			</tbody>
+			</table>
+		</div> {# circuit_details #}
+		
+		<div class="programmations">
+		<h3>Programmations de ce circuit</h3>
+		<table>
+		 		<thead>
+					<tr>
+				    	<th>Date de départ</th>
+						<th>Nombre de personnes</th>
+						<th>Prix</th>
+						<th></th>
+					</tr>
+				</thead>
+		{%  for programmation in circuit.programmations %}
+			<tr>
+			   <td>{{ programmation.dateDepart|date('d-m-Y')  }}</td>
+			   <td>{{ programmation.nombrePersonnes }}</td> 
+			   <td>{{ programmation.prix }} euros</td>
+			</tr>
+		{% endfor %}
+		</table>
+	</div> {# programmations #}
+    <ul>
+        <li>
+            <a href="{{ path('circuit_index') }}">Retour à la liste</a>
+        </li>
+    </ul>
+	</div> {# circuit #}
+    
+{% endblock %}  {# main #}

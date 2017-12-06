@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block header %}
+	<header>
+		<p><a href="{{ path('app_blog_list') }}">Accueil</a> -
+		   <a href="{{ path('admin_post_new') }}">Nouveau post</a>
+		</p>
+	</header>
+{% endblock %}

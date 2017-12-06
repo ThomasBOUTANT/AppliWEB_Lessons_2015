@@ -1,0 +1,22 @@
+<?php
+
+// src/AppBundle/Controller/LotoController.php
+namespace AppBundle\Controller;
+
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Response;
+
+class LotoController
+{
+    /**
+     * @Route("/loto/boule")
+     */
+    public function bouleAction()
+    {
+        $number = mt_rand(1, 90);
+
+        return new Response(
+            '<html><body>Tirage de la boule : '.$number.'</body></html>'
+        );
+    }
+}
